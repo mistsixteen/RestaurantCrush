@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class Pos
 {
     public Pos(int x, int y)
@@ -14,7 +16,7 @@ public class Pos
     public int Y { get; set; }
 }
 
-public class NodeBoardScript : MonoBehaviour
+public class GameBoard : MonoBehaviour
 {
     [SerializeField]
     public GameObject tempNode;
@@ -64,7 +66,7 @@ public class NodeBoardScript : MonoBehaviour
         Debug.Log("Touched " + touchedObj.X + " " + touchedObj.Y);
     }
 
-    public void releaseTouchedObject()
+    public void releaseTouchedObject(Pos touched)
     {
         Debug.Log("Released " + touchedObj.X + " " + touchedObj.Y);
         touchedObj.X = -1;

@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 
 
-public class NodeScript : MonoBehaviour
+public class Node : MonoBehaviour
 {
     [SerializeField]
     private float moveLength;
@@ -13,11 +13,11 @@ public class NodeScript : MonoBehaviour
     private bool isClicked;
     private Vector3 mousePoint;
 
-    private NodeBoardScript NodeBoardObject;
+    private GameBoard NodeBoardObject;
     
     private Pos CurrentPos;
 
-    public NodeScript()
+    public Node()
     {
         isClicked = false;
     }
@@ -25,7 +25,7 @@ public class NodeScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        NodeBoardObject = GameObject.Find("NodeBoard").GetComponent<NodeBoardScript>();
+        NodeBoardObject = GameObject.Find("NodeBoard").GetComponent<GameBoard>();
     }
     // Update is called once per frame
     void Update()
@@ -37,21 +37,26 @@ public class NodeScript : MonoBehaviour
             if(mousePoint2.y - mousePoint.y > moveLength)
             {
                 Debug.Log("UP");
+
+                NodeBoardObject.releaseTouchedObject(CurrentPos);
                 isClicked = false;
             }
             else if(mousePoint.y - mousePoint2.y > moveLength)
             {
                 Debug.Log("DOWN");
+                NodeBoardObject.releaseTouchedObject(CurrentPos);
                 isClicked = false;
             }
             else if (mousePoint2.x - mousePoint.x > moveLength)
             {
                 Debug.Log("R");
+                NodeBoardObject.releaseTouchedObject(CurrentPos);
                 isClicked = false;
             }
             else if (mousePoint.x - mousePoint2.x > moveLength)
             {
                 Debug.Log("L");
+                NodeBoardObject.releaseTouchedObject(CurrentPos);
                 isClicked = false;
             }
 
