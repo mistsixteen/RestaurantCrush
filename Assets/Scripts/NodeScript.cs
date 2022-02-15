@@ -11,16 +11,22 @@ public class NodeScript : MonoBehaviour
     private float moveLength;
 
     private bool isClicked;
-
     private Vector3 mousePoint;
 
+    private NodeBoardScript NodeBoardObject;
+    
+    private Pos CurrentPos;
 
-    // Start is called before the first frame update
-    void Start()
+    public NodeScript()
     {
         isClicked = false;
     }
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        NodeBoardObject = GameObject.Find("NodeBoard").GetComponent<NodeBoardScript>();
+    }
     // Update is called once per frame
     void Update()
     {
@@ -55,8 +61,13 @@ public class NodeScript : MonoBehaviour
     public void OnMouseDown()
     {
         //toDo : NodeBoard에 isClicked Check 요청
-        isClicked = true;
-        mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if(NodeBoardObject.isClickAble())
+        {
+            isClicked = true;
+            NodeBoardObject.setTouchedObject(CurrentPos);
+            mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+        
     }
     
     //IPointerUpHandler
@@ -65,5 +76,9 @@ public class NodeScript : MonoBehaviour
         //toDo : NodeBoard에 isClicked 종료 요청
         isClicked = false;
     }
-    // On Pointer Up
+
+    void SetPosition(Pos position)
+    {
+        CurrentPos = position;
+    }
 }
