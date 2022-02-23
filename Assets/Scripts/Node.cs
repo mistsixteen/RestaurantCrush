@@ -14,12 +14,15 @@ public class Node : MonoBehaviour
     private Vector3 mousePoint;
 
     private GameBoard NodeBoardObject;
-    
-    private Pos CurrentPos;
+
+    private int xPos, yPos;
 
     public Node()
     {
         isClicked = false;
+        moveLength = 0.5f;
+        xPos = 0;
+        yPos = 0;
     }
 
     // Start is called before the first frame update
@@ -37,26 +40,25 @@ public class Node : MonoBehaviour
             if(mousePoint2.y - mousePoint.y > moveLength)
             {
                 Debug.Log("UP");
-
-                NodeBoardObject.releaseTouchedObject(CurrentPos);
+                NodeBoardObject.releaseTouchedObject(xPos, yPos);
                 isClicked = false;
             }
             else if(mousePoint.y - mousePoint2.y > moveLength)
             {
                 Debug.Log("DOWN");
-                NodeBoardObject.releaseTouchedObject(CurrentPos);
+                NodeBoardObject.releaseTouchedObject(xPos, yPos);
                 isClicked = false;
             }
             else if (mousePoint2.x - mousePoint.x > moveLength)
             {
                 Debug.Log("R");
-                NodeBoardObject.releaseTouchedObject(CurrentPos);
+                NodeBoardObject.releaseTouchedObject(xPos, yPos);
                 isClicked = false;
             }
             else if (mousePoint.x - mousePoint2.x > moveLength)
             {
                 Debug.Log("L");
-                NodeBoardObject.releaseTouchedObject(CurrentPos);
+                NodeBoardObject.releaseTouchedObject(xPos, yPos);
                 isClicked = false;
             }
 
@@ -69,7 +71,7 @@ public class Node : MonoBehaviour
         if(NodeBoardObject.isClickAble())
         {
             isClicked = true;
-            NodeBoardObject.setTouchedObject(CurrentPos);
+            NodeBoardObject.setTouchedObject(xPos, yPos);
             mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
         
@@ -82,8 +84,9 @@ public class Node : MonoBehaviour
         isClicked = false;
     }
 
-    void SetPosition(Pos position)
+    public void SetPosition(int inputXPos, int inputYPos)
     {
-        CurrentPos = position;
+        xPos = inputXPos;
+        yPos = inputYPos;
     }
 }
