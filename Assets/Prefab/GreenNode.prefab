@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3884827286381987051}
   - component: {fileID: 3884827286381987050}
   m_Layer: 0
-  m_Name: Node (1)
+  m_Name: GreenNode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 3884827286381987062}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.85, y: 0.66, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 500, y: 500, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0

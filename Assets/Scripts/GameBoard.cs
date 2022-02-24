@@ -71,7 +71,7 @@ public class GameBoard : MonoBehaviour
 
                 rect.SetParent(this.GetComponent<Transform>());
   
-                rect.position = new Vector3(baseXPos + (float)i * NodeXDistance, baseYPos + (float)j * NodeYDistance, 0.0f);
+                rect.position = new Vector3(baseXPos + (float)j * NodeXDistance, baseYPos + (float)i * NodeYDistance, 0.0f);
             }
         }
         currentGameState = gameState.Idle;
