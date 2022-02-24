@@ -29,6 +29,8 @@ public class GameBoard : MonoBehaviour
     public float baseYPos;
     public float NodeXDistance;
     public float NodeYDistance;
+    public int boardXSize;
+    public int boardYSize;
 
     GameObject[,] NodeBoard;
 
@@ -41,10 +43,10 @@ public class GameBoard : MonoBehaviour
         touchedXpos = -1;
         touchedYpos = -1;
         currentGameState = gameState.startingGame;
-        NodeBoard = new GameObject[7, 7];
-        for(int i = 0; i < 7; i++)
+        NodeBoard = new GameObject[boardYSize, boardXSize];
+        for(int i = 0; i < boardYSize; i++)
         {
-            for (int j = 0; j < 7; j++)
+            for (int j = 0; j < boardXSize; j++)
             {
                 int random = Random.Range(0, 4);
                 switch(random)
