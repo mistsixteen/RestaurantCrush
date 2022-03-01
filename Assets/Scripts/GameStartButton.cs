@@ -20,7 +20,7 @@ public class GameStartButton : MonoBehaviour
     public void OnMouseDown()
     {
         //todo : start sampleScene
-        Debug.Log("LoadScene");
+        Debug.Log("Load Sample Scene");
         SceneManager.LoadScene("SampleScene");
     }
 }

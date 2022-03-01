@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-
+enum nodeState
+{
+    Idle,
+    Moving
+}
 
 public class Node : MonoBehaviour
 {
@@ -16,6 +20,7 @@ public class Node : MonoBehaviour
     private GameBoard NodeBoardObject;
 
     private int xPos, yPos;
+    private nodeState currentState;
 
     public Node()
     {
@@ -23,6 +28,7 @@ public class Node : MonoBehaviour
         moveLength = 0.5f;
         xPos = 0;
         yPos = 0;
+        currentState = nodeState.Idle;
     }
 
     // Start is called before the first frame update
@@ -88,5 +94,13 @@ public class Node : MonoBehaviour
     {
         xPos = inputXPos;
         yPos = inputYPos;
+    }
+
+    public bool IsIdle()
+    {
+        if (currentState == nodeState.Idle)
+            return true;
+        else
+            return false;
     }
 }
