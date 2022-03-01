@@ -40,43 +40,8 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        touchedXpos = -1;
-        touchedYpos = -1;
         currentGameState = gameState.startingGame;
-        NodeBoard = new GameObject[boardYSize, boardXSize];
-        for(int i = 0; i < boardYSize; i++)
-        {
-            for (int j = 0; j < boardXSize; j++)
-            {
-                int random = Random.Range(0, 4);
-                switch(random)
-                {
-                    case 0:
-                        NodeBoard[i, j] = Instantiate(redNode);
-                        break;
-                    case 1:
-                        NodeBoard[i, j] = Instantiate(GreenNode);
-                        break;
-                    case 2:
-                        NodeBoard[i, j] = Instantiate(BlueNode);
-                        break;
-                    case 3:
-                        NodeBoard[i, j] = Instantiate(YellowNode);
-                        break;
-                    default:
-                        NodeBoard[i, j] = Instantiate(redNode);
-                        break;
-                }
-                
-                Transform rect = NodeBoard[i, j].GetComponent<Transform>();
-                NodeBoard[i, j].GetComponent<Node>().SetPosition(i, j);
-
-                rect.SetParent(this.GetComponent<Transform>());
-  
-                rect.position = new Vector3(baseXPos + (float)j * NodeXDistance, baseYPos + (float)i * NodeYDistance, 0.0f);
-            }
-        }
-        currentGameState = gameState.Idle;
+        InitializeBoard();
     }
 
     // Update is called once per frame
@@ -100,6 +65,47 @@ public class GameBoard : MonoBehaviour
 
     public void releaseTouchedObject(int xPos, int yPos)
     {
-        Debug.Log("GameBoard : Released " + xPos + " " + yPos);        
+        if(touchedXpos == xPos && touchedYpos == yPos)
+            Debug.Log("GameBoard : Released " + xPos + " " + yPos);        
+    }
+
+    public void InitializeBoard()
+    {
+        touchedXpos = -1;
+        touchedYpos = -1;
+        NodeBoard = new GameObject[boardYSize, boardXSize];
+        for (int i = 0; i < boardYSize; i++)
+        {
+            for (int j = 0; j < boardXSize; j++)
+            {
+                int random = Random.Range(0, 4);
+                switch (random)
+                {
+                    case 0:
+                        NodeBoard[i, j] = Instantiate(redNode);
+                        break;
+                    case 1:
+                        NodeBoard[i, j] = Instantiate(GreenNode);
+                        break;
+                    case 2:
+                        NodeBoard[i, j] = Instantiate(BlueNode);
+                        break;
+                    case 3:
+                        NodeBoard[i, j] = Instantiate(YellowNode);
+                        break;
+                    default:
+                        NodeBoard[i, j] = Instantiate(redNode);
+                        break;
+                }
+
+                Transform rect = NodeBoard[i, j].GetComponent<Transform>();
+                NodeBoard[i, j].GetComponent<Node>().SetPosition(i, j);
+
+                rect.SetParent(this.GetComponent<Transform>());
+
+                rect.position = new Vector3(baseXPos + (float)j * NodeXDistance, baseYPos + (float)i * NodeYDistance, 0.0f);
+            }
+        }
+        currentGameState = gameState.Idle;
     }
 }
