@@ -8,7 +8,6 @@ enum GameStatus
     Idle,
     Moving
 }
-
 public enum NodeType
 {
     Red,
@@ -16,7 +15,6 @@ public enum NodeType
     Green,
     Yellow
 }
-
 public enum MoveType
 {
     Up,
@@ -67,12 +65,27 @@ public class GameBoard : MonoBehaviour
         touchedYpos = yPos;
         Debug.Log("GameBoard : Touched " + touchedXpos + " " + touchedYpos);
     }
+    
+    public void ReleasedNode(int xPos, int yPos)
+    {
+        if (touchedXpos == xPos && touchedYpos == yPos)
+        {
+            touchedXpos = -1;
+            touchedYpos = -1;
+        }
+            
+        Debug.Log("GameBoard : Touched " + touchedXpos + " " + touchedYpos);
+    }
 
-    public void ReleasedNode(int xPos, int yPos, MoveType mType)
+    public void MovedNode(int xPos, int yPos, MoveType mType)
     {
         if(touchedXpos == xPos && touchedYpos == yPos)
         {
             Debug.Log("GameBoard : Released " + xPos + " " + yPos + mType);
+            Vector3 temp1 = new Vector3(baseXPos + ((float)yPos+1) * NodeXDistance, baseYPos + (float)xPos * NodeYDistance, 0.0f);
+            Vector3 temp2 = new Vector3(baseXPos + (float)yPos * NodeXDistance, baseYPos + (float)xPos * NodeYDistance, 0.0f);
+            NodeBoard[xPos, yPos].GetComponent<Node>().OrderMove(temp1);
+            NodeBoard[xPos, yPos].GetComponent<Node>().OrderMove(temp2);
         }
             
     }
