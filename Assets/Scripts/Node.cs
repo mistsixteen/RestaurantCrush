@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-enum nodeState
+enum NodeStatus
 {
     Idle,
     Moving
@@ -20,7 +20,7 @@ public class Node : MonoBehaviour
     private GameBoard NodeBoardObject;
 
     private int xPos, yPos;
-    private nodeState currentState;
+    private readonly NodeStatus currentState;
 
     public Node()
     {
@@ -28,7 +28,7 @@ public class Node : MonoBehaviour
         moveLength = 0.5f;
         xPos = 0;
         yPos = 0;
-        currentState = nodeState.Idle;
+        currentState = NodeStatus.Idle;
     }
 
     // Start is called before the first frame update
@@ -45,26 +45,22 @@ public class Node : MonoBehaviour
 
             if(mousePoint2.y - mousePoint.y > moveLength)
             {
-                Debug.Log("UP");
-                NodeBoardObject.releaseTouchedObject(xPos, yPos);
+                NodeBoardObject.ReleasedNode(xPos, yPos, MoveType.Up);
                 isClicked = false;
             }
             else if(mousePoint.y - mousePoint2.y > moveLength)
             {
-                Debug.Log("DOWN");
-                NodeBoardObject.releaseTouchedObject(xPos, yPos);
+                NodeBoardObject.ReleasedNode(xPos, yPos, MoveType.Down);
                 isClicked = false;
             }
             else if (mousePoint2.x - mousePoint.x > moveLength)
             {
-                Debug.Log("R");
-                NodeBoardObject.releaseTouchedObject(xPos, yPos);
+                NodeBoardObject.ReleasedNode(xPos, yPos, MoveType.Right);
                 isClicked = false;
             }
             else if (mousePoint.x - mousePoint2.x > moveLength)
             {
-                Debug.Log("L");
-                NodeBoardObject.releaseTouchedObject(xPos, yPos);
+                NodeBoardObject.ReleasedNode(xPos, yPos, MoveType.Up);
                 isClicked = false;
             }
 
@@ -77,7 +73,7 @@ public class Node : MonoBehaviour
         if(NodeBoardObject.isClickAble())
         {
             isClicked = true;
-            NodeBoardObject.setTouchedObject(xPos, yPos);
+            NodeBoardObject.TouchedNode(xPos, yPos);
             mousePoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         }
         
@@ -98,7 +94,7 @@ public class Node : MonoBehaviour
 
     public bool IsIdle()
     {
-        if (currentState == nodeState.Idle)
+        if (currentState == NodeStatus.Idle)
             return true;
         else
             return false;

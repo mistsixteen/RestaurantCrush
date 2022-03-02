@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-enum gameState
+enum GameStatus
 {
     startingGame,
     Idle,
     Moving
 }
 
-enum nodeType
+public enum NodeType
 {
     Red,
     Blue,
@@ -17,11 +17,16 @@ enum nodeType
     Yellow
 }
 
+public enum MoveType
+{
+    Up,
+    Down,
+    Left,
+    Right
+}
+
 public class GameBoard : MonoBehaviour
 {
-    [SerializeField]
-    public GameObject tempNode;
-
     [SerializeField]
     private GameObject redNode, GreenNode, BlueNode, YellowNode;
 
@@ -34,13 +39,13 @@ public class GameBoard : MonoBehaviour
 
     GameObject[,] NodeBoard;
 
-    gameState currentGameState;
+    GameStatus currentGameState;
     int touchedXpos, touchedYpos;
 
     // Start is called before the first frame update
     void Start()
     {
-        currentGameState = gameState.startingGame;
+        currentGameState = GameStatus.startingGame;
         InitializeBoard();
     }
 
@@ -56,17 +61,20 @@ public class GameBoard : MonoBehaviour
         return true;
     }
 
-    public void setTouchedObject(int xPos, int yPos)
+    public void TouchedNode(int xPos, int yPos)
     {
         touchedXpos = xPos;
         touchedYpos = yPos;
         Debug.Log("GameBoard : Touched " + touchedXpos + " " + touchedYpos);
     }
 
-    public void releaseTouchedObject(int xPos, int yPos)
+    public void ReleasedNode(int xPos, int yPos, MoveType mType)
     {
         if(touchedXpos == xPos && touchedYpos == yPos)
-            Debug.Log("GameBoard : Released " + xPos + " " + yPos);        
+        {
+            Debug.Log("GameBoard : Released " + xPos + " " + yPos + mType);
+        }
+            
     }
 
     public void InitializeBoard()
@@ -106,6 +114,6 @@ public class GameBoard : MonoBehaviour
                 rect.position = new Vector3(baseXPos + (float)j * NodeXDistance, baseYPos + (float)i * NodeYDistance, 0.0f);
             }
         }
-        currentGameState = gameState.Idle;
+        currentGameState = GameStatus.Idle;
     }
 }
