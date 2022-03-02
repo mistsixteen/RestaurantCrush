@@ -80,16 +80,13 @@ public class Node : MonoBehaviour
 
                 if (MoveFrameLeft == 0)
                 {
-                    Debug.Log("MoveFrameLeft 0");
                     transform.position = MoveTarget;
                     if(moveQueue.Count == 0)
                     {
-                        Debug.Log("Count 0");
                         currentState = NodeStatus.Idle;
                     }
                     else
                     {
-                        Debug.Log("Count !0");
                         MoveTarget = moveQueue.Dequeue();
                         MoveVector = (MoveTarget - transform.position) / moveFrame;
                         MoveFrameLeft = 30;

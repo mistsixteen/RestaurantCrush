@@ -82,10 +82,10 @@ public class GameBoard : MonoBehaviour
         if(touchedXpos == xPos && touchedYpos == yPos)
         {
             Debug.Log("GameBoard : Released " + xPos + " " + yPos + mType);
-            Vector3 temp1 = new Vector3(baseXPos + ((float)yPos+1) * NodeXDistance, baseYPos + (float)xPos * NodeYDistance, 0.0f);
-            Vector3 temp2 = new Vector3(baseXPos + (float)yPos * NodeXDistance, baseYPos + (float)xPos * NodeYDistance, 0.0f);
-            NodeBoard[xPos, yPos].GetComponent<Node>().OrderMove(temp1);
-            NodeBoard[xPos, yPos].GetComponent<Node>().OrderMove(temp2);
+            Vector3 temp1 = new Vector3(baseXPos + ((float)xPos+1.0f) * NodeXDistance, baseYPos + (float)yPos * NodeYDistance, 0.0f);
+            Vector3 temp2 = new Vector3(baseXPos + (float)xPos * NodeXDistance, baseYPos + (float)yPos * NodeYDistance, 0.0f);
+            NodeBoard[yPos, xPos].GetComponent<Node>().OrderMove(temp1);
+            NodeBoard[yPos, xPos].GetComponent<Node>().OrderMove(temp2);
         }
             
     }
@@ -120,7 +120,7 @@ public class GameBoard : MonoBehaviour
                 }
 
                 Transform rect = NodeBoard[i, j].GetComponent<Transform>();
-                NodeBoard[i, j].GetComponent<Node>().SetPosition(i, j);
+                NodeBoard[i, j].GetComponent<Node>().SetPosition(j, i);
 
                 rect.SetParent(this.GetComponent<Transform>());
 
