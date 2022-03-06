@@ -62,9 +62,11 @@ public class GameBoard : MonoBehaviour
     }
 
     //현재 이동가능한 상황인지 확인
-    public bool isClickAble()
+    public bool IsClickAble()
     {
-        return true;
+        if(currentGameState == GameStatus.Idle)
+            return true;
+        return false;
     }
 
     public void TouchedNode(int xPos, int yPos)
@@ -120,13 +122,59 @@ public class GameBoard : MonoBehaviour
                     }
                     break;
             }
-            Vector3 temp1 = GetNodePosition(mXPos, mYPos);
-            Vector3 temp2 = GetNodePosition(xPos, yPos);
-            NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
-            NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
+            
+            if(MoveThreeMatchCheck(xPos, yPos, mXPos, mYPos)) //3-matched
+            {
+                /*
+                Vector3 temp1 = GetNodePosition(mXPos, mYPos);
+                Vector3 temp2 = GetNodePosition(xPos, yPos);
+                NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
+                NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
+                */
+            }
+            else //non -> flip
+            {
+                Vector3 temp1 = GetNodePosition(mXPos, mYPos);
+                Vector3 temp2 = GetNodePosition(xPos, yPos);
+                NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
+                NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
+            }
 
         }
         
+    }
+
+    bool MoveThreeMatchCheck(int xPos1, int yPos1, int xPos2, int yPos2)
+    {
+        NodeType[,] currentBoard = new NodeType[boardYSize, boardXSize];
+        for(int i = 0; i < boardYSize; i++)
+        {
+            for(int j = 0; j < boardXSize; j++)
+            {
+                currentBoard[i, j] = NodeBoard[i, j].nodeType;
+            }
+        }
+        NodeType temp = currentBoard[yPos1, xPos1];
+        currentBoard[yPos1, xPos1] = currentBoard[yPos2, xPos2];
+        currentBoard[yPos2, xPos2] = temp;
+
+        for (int i = 0; i < boardYSize; i++)
+        {
+            for (int j = 0; j < boardXSize; j++)
+            {
+                if (i < boardYSize - 2 && 
+                    currentBoard[i, j] == currentBoard[i + 1, j] &&
+                    currentBoard[i + 1, j] == currentBoard[i + 2, j])
+                    return true;
+                if (j < boardXSize - 2 &&
+                    currentBoard[i, j] == currentBoard[i, j + 1] &&
+                    currentBoard[i, j + 1] == currentBoard[i, j + 2])
+                    return true;
+            }
+        }
+
+
+        return false;
     }
 
     Vector3 GetNodePosition(int xPos, int yPos)

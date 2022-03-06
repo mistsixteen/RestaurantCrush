@@ -96,7 +96,7 @@ public class Node : MonoBehaviour
     public void OnMouseDown()
     {
         //toDo : NodeBoard에 isClicked Check 요청
-        if(NodeBoardObject.isClickAble())
+        if(NodeBoardObject.IsClickAble())
         {
             isClicked = true;
             NodeBoardObject.TouchedNode(xPos, yPos);
