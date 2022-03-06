@@ -6,7 +6,11 @@ enum GameStatus
 {
     startingGame,
     Idle,
-    Moving
+    FlipMoving,
+    Moving,
+    ThreeMatchCheck,
+    GameEndCheck,
+    GameEnded
 }
 public enum NodeType
 {
@@ -43,22 +47,42 @@ public class GameBoard : MonoBehaviour
     public int boardXSize;
     public int boardYSize;
 
+    private List<Node> onMoveList;
+
     NodeContainer[,] NodeBoard;
 
     GameStatus currentGameState;
     int touchedXpos, touchedYpos;
 
+    public GameBoard()
+    {
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         currentGameState = GameStatus.startingGame;
+        onMoveList = new List<Node>();
         InitializeBoard();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        switch(currentGameState)
+        {
+            case GameStatus.FlipMoving:
+                onMoveList.RemoveAll(item => item.IsIdle() == true);
+                if(onMoveList.Count == 0)
+                {
+                    Debug.Log("Move Ended!!!");
+                    currentGameState = GameStatus.Idle;
+                }
+                break;
+            default:
+                break;
+
+        }
     }
 
     //현재 이동가능한 상황인지 확인
@@ -134,10 +158,16 @@ public class GameBoard : MonoBehaviour
             }
             else //non -> flip
             {
+                Debug.Log("flip!" + xPos + yPos + mXPos + mYPos);
                 Vector3 temp1 = GetNodePosition(mXPos, mYPos);
                 Vector3 temp2 = GetNodePosition(xPos, yPos);
                 NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
                 NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
+                NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
+                NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
+                onMoveList.Add(NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>());
+                onMoveList.Add(NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>());
+                currentGameState = GameStatus.FlipMoving;
             }
 
         }
@@ -193,10 +223,13 @@ public class GameBoard : MonoBehaviour
 
     public void InitializeBoard()
     {
-        int random = 0;
+        int random;
+
         touchedXpos = -1;
         touchedYpos = -1;
+
         NodeBoard = new NodeContainer[boardYSize, boardXSize];
+
         for (int i = 0; i < boardYSize; i++)
         {
             for (int j = 0; j < boardXSize; j++)
