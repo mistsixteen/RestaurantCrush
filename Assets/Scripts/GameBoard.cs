@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 enum GameStatus
 {
@@ -49,6 +50,12 @@ public class GameBoard : MonoBehaviour
     public int boardXSize;
     public int boardYSize;
 
+    //Stage Information
+    private int score;
+    private int moveleft;
+
+    private Text scoreText, moveText;
+
     private List<Node> onMoveList;
     
     NodeContainer[,] NodeBoard;
@@ -59,6 +66,7 @@ public class GameBoard : MonoBehaviour
 
     public GameBoard()
     {
+        
     }
 
     // Start is called before the first frame update
@@ -66,7 +74,16 @@ public class GameBoard : MonoBehaviour
     {
         currentGameState = GameStatus.startingGame;
         onMoveList = new List<Node>();
+        scoreText = GameObject.Find("CurrentScore").GetComponent<Text>();
+        moveText = GameObject.Find("MoveLeft").GetComponent<Text>();
         InitializeBoard();
+    }
+
+    void setUI()
+    {
+        string fmt = "00000000";
+        scoreText.text = score.ToString(fmt);
+        moveText.text = moveleft.ToString(fmt);
     }
 
     // Update is called once per frame
@@ -101,9 +118,11 @@ public class GameBoard : MonoBehaviour
                                 Node temp = NodeBoard[i, j].nodeObj.GetComponent<Node>();
                                 temp.SetDisappear();
                                 NodeBoard[i, j].nodeObj = null;
+                                score++;
                             }
                         }
                     }
+                    setUI();
                     currentGameState = GameStatus.FallCheck;
                 }
                 else
@@ -207,6 +226,8 @@ public class GameBoard : MonoBehaviour
                 NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().SetPosition(xPos, yPos);
                 NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>().SetPosition(mXPos, mYPos);
                 currentGameState = GameStatus.Moving;
+                moveleft--;
+                setUI();
             }
             else //non -> flip
             {
@@ -318,7 +339,6 @@ public class GameBoard : MonoBehaviour
 
         for (int j = 0; j < boardXSize; j++)
         {
-            Debug.Log(NodeBoard[0, j].nodeObj);
             if (NodeBoard[0, j].nodeObj == null)
             {
                 int random = Random.Range(1, 5);
@@ -377,7 +397,8 @@ public class GameBoard : MonoBehaviour
     public void InitializeBoard()
     {
         int random;
-
+        score = 0;
+        moveleft = 50;
         touchedXpos = -1;
         touchedYpos = -1;
 
@@ -428,5 +449,6 @@ public class GameBoard : MonoBehaviour
             }
         }
         currentGameState = GameStatus.Idle;
+        setUI();
     }
 }
