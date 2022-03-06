@@ -6,7 +6,8 @@ using UnityEngine.EventSystems;
 enum NodeStatus
 {
     Idle,
-    Moving
+    Moving,
+    Disappearing,
 }
 
 public class Node : MonoBehaviour
@@ -89,6 +90,14 @@ public class Node : MonoBehaviour
                     }
                 }
                 break;
+            case NodeStatus.Disappearing:
+                transform.position += Vector3.down * 0.05f;
+                MoveFrameLeft--;
+
+                if (MoveFrameLeft <= 0)
+                    Destroy(this.gameObject);
+
+                break;
 
         }
     }
@@ -124,6 +133,13 @@ public class Node : MonoBehaviour
         else
             return false;
     }
+
+    public void SetDisappear()
+    {
+        currentState = NodeStatus.Disappearing;
+        MoveFrameLeft = 500;
+    }
+
     void CheckMouseMovement()
     {
         Vector3 mousePoint2 = Camera.main.ScreenToWorldPoint(Input.mousePosition);

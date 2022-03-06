@@ -8,7 +8,8 @@ enum GameStatus
     Idle,
     FlipMoving,
     Moving,
-    ThreeMatchCheck,
+    MatchCheck,
+    Falling,
     GameEndCheck,
     GameEnded
 }
@@ -48,8 +49,9 @@ public class GameBoard : MonoBehaviour
     public int boardYSize;
 
     private List<Node> onMoveList;
-
+    
     NodeContainer[,] NodeBoard;
+    bool[,] isMatched;
 
     GameStatus currentGameState;
     int touchedXpos, touchedYpos;
@@ -75,9 +77,38 @@ public class GameBoard : MonoBehaviour
                 onMoveList.RemoveAll(item => item.IsIdle() == true);
                 if(onMoveList.Count == 0)
                 {
-                    Debug.Log("Move Ended!!!");
                     currentGameState = GameStatus.Idle;
                 }
+                break;
+            case GameStatus.Moving:
+                onMoveList.RemoveAll(item => item.IsIdle() == true);
+                if (onMoveList.Count == 0)
+                {
+                    currentGameState = GameStatus.MatchCheck;
+                }
+                break;
+            case GameStatus.MatchCheck:
+                if(MakeThreeMatchList() == true)
+                {
+                    for (int i = 0; i < boardYSize; i++)
+                    {
+                        for (int j = 0; j < boardXSize; j++)
+                        {
+                            if(isMatched[i, j] == true)
+                            {
+                                Node temp = NodeBoard[i, j].nodeObj.GetComponent<Node>();
+                                temp.SetDisappear();
+                                NodeBoard[i, j].nodeObj = null;
+                            }
+                        }
+                    }
+                    currentGameState = GameStatus.Idle;
+                }
+                else
+                {
+                    currentGameState = GameStatus.Idle;
+                }
+
                 break;
             default:
                 break;
@@ -149,16 +180,21 @@ public class GameBoard : MonoBehaviour
             
             if(MoveThreeMatchCheck(xPos, yPos, mXPos, mYPos)) //3-matched
             {
-                /*
                 Vector3 temp1 = GetNodePosition(mXPos, mYPos);
                 Vector3 temp2 = GetNodePosition(xPos, yPos);
                 NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
-                NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
-                */
+                NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
+                onMoveList.Add(NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>());
+                onMoveList.Add(NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>());
+                NodeContainer temp = NodeBoard[yPos, xPos];
+                NodeBoard[yPos, xPos] = NodeBoard[mYPos, mXPos];
+                NodeBoard[mYPos, mXPos] = temp;
+                NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().SetPosition(xPos, yPos);
+                NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>().SetPosition(mXPos, mYPos);
+                currentGameState = GameStatus.Moving;
             }
             else //non -> flip
             {
-                Debug.Log("flip!" + xPos + yPos + mXPos + mYPos);
                 Vector3 temp1 = GetNodePosition(mXPos, mYPos);
                 Vector3 temp2 = GetNodePosition(xPos, yPos);
                 NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
@@ -203,9 +239,52 @@ public class GameBoard : MonoBehaviour
             }
         }
 
-
         return false;
     }
+    bool MakeThreeMatchList()
+    {
+        NodeType[,] currentBoard = new NodeType[boardYSize, boardXSize];
+
+        bool isMatchMade = false;
+
+        for (int i = 0; i < boardYSize; i++)
+        {
+            for (int j = 0; j < boardXSize; j++)
+            {
+                currentBoard[i, j] = NodeBoard[i, j].nodeType;
+                isMatched[i, j] = false;
+            }
+        }
+
+        for (int i = 0; i < boardYSize; i++)
+        {
+            for (int j = 0; j < boardXSize; j++)
+            {
+                if (i < boardYSize - 2 &&
+                    currentBoard[i, j] == currentBoard[i + 1, j] &&
+                    currentBoard[i + 1, j] == currentBoard[i + 2, j])
+                {
+                    isMatched[i, j] = true;
+                    isMatched[i + 1, j] = true;
+                    isMatched[i + 2, j] = true;
+                    isMatchMade = true;
+                }
+                if (j < boardXSize - 2 &&
+                    currentBoard[i, j] == currentBoard[i, j + 1] &&
+                    currentBoard[i, j + 1] == currentBoard[i, j + 2])
+                {
+                    isMatched[i, j] = true;
+                    isMatched[i, j + 1] = true;
+                    isMatched[i, j + 2] = true;
+                    isMatchMade = true;
+                }
+                    
+            }
+        }
+
+        return isMatchMade;
+    }
+
 
     Vector3 GetNodePosition(int xPos, int yPos)
     {
@@ -229,6 +308,7 @@ public class GameBoard : MonoBehaviour
         touchedYpos = -1;
 
         NodeBoard = new NodeContainer[boardYSize, boardXSize];
+        isMatched = new bool[boardYSize, boardXSize];
 
         for (int i = 0; i < boardYSize; i++)
         {
