@@ -27,7 +27,7 @@ public enum MoveType
 struct NodeContainer
 {
     public GameObject nodeObj;
-    public NodeType nType;
+    public NodeType nodeType;
 }
 
 public class GameBoard : MonoBehaviour
@@ -134,8 +134,18 @@ public class GameBoard : MonoBehaviour
         return new Vector3(baseXPos + (float)xPos * NodeXDistance, baseYPos + (float)yPos * NodeYDistance, 0.0f);
     }
 
+    bool IsInstallAble(int xPos, int yPos, NodeType currentNodeType)
+    {
+        if (xPos > 1 && NodeBoard[yPos, xPos - 1].nodeType == currentNodeType && NodeBoard[yPos, xPos - 2].nodeType == currentNodeType)
+            return false;
+        if (yPos > 1 && NodeBoard[yPos - 1, xPos].nodeType == currentNodeType && NodeBoard[yPos - 1, xPos].nodeType == currentNodeType)
+            return false;
+        return true;
+    }
+
     public void InitializeBoard()
     {
+        int random = 0;
         touchedXpos = -1;
         touchedYpos = -1;
         NodeBoard = new NodeContainer[boardYSize, boardXSize];
@@ -143,28 +153,34 @@ public class GameBoard : MonoBehaviour
         {
             for (int j = 0; j < boardXSize; j++)
             {
-                int random = Random.Range(0, 4);
+                while (true)
+                {
+                    random = Random.Range(1, 5);
+                    if (IsInstallAble(j, i, (NodeType)(random)) == true)
+                        break;
+                }
+                
                 switch (random)
                 {
-                    case 0:
-                        NodeBoard[i, j].nodeObj = Instantiate(redNode);
-                        NodeBoard[i, j].nType = NodeType.Red;
-                        break;
                     case 1:
-                        NodeBoard[i, j].nodeObj = Instantiate(GreenNode);
-                        NodeBoard[i, j].nType = NodeType.Green;
+                        NodeBoard[i, j].nodeObj = Instantiate(redNode);
+                        NodeBoard[i, j].nodeType = NodeType.Red;
                         break;
                     case 2:
                         NodeBoard[i, j].nodeObj = Instantiate(BlueNode);
-                        NodeBoard[i, j].nType = NodeType.Blue;
+                        NodeBoard[i, j].nodeType = NodeType.Blue;
                         break;
                     case 3:
+                        NodeBoard[i, j].nodeObj = Instantiate(GreenNode);
+                        NodeBoard[i, j].nodeType = NodeType.Green;
+                        break;
+                    case 4:
                         NodeBoard[i, j].nodeObj = Instantiate(YellowNode);
-                        NodeBoard[i, j].nType = NodeType.Yellow;
+                        NodeBoard[i, j].nodeType = NodeType.Yellow;
                         break;
                     default:
                         NodeBoard[i, j].nodeObj = Instantiate(redNode);
-                        NodeBoard[i, j].nType = NodeType.None;
+                        NodeBoard[i, j].nodeType = NodeType.None;
                         break;
                 }
 
