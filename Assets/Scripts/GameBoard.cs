@@ -9,6 +9,7 @@ enum GameStatus
     FlipMoving,
     Moving,
     MatchCheck,
+    FallCheck,
     Falling,
     GameEndCheck,
     GameEnded
@@ -88,6 +89,7 @@ public class GameBoard : MonoBehaviour
                 }
                 break;
             case GameStatus.MatchCheck:
+                Debug.Log("MatchCheck");
                 if(MakeThreeMatchList() == true)
                 {
                     for (int i = 0; i < boardYSize; i++)
@@ -102,13 +104,26 @@ public class GameBoard : MonoBehaviour
                             }
                         }
                     }
-                    currentGameState = GameStatus.Idle;
+                    currentGameState = GameStatus.FallCheck;
                 }
                 else
                 {
                     currentGameState = GameStatus.Idle;
                 }
-
+                break;
+            case GameStatus.FallCheck:
+                MakeFallMoveMent();
+                if (onMoveList.Count == 0)
+                    currentGameState = GameStatus.MatchCheck;
+                else
+                    currentGameState = GameStatus.Falling;
+                break;
+            case GameStatus.Falling:
+                onMoveList.RemoveAll(item => item.IsIdle() == true);
+                if (onMoveList.Count == 0)
+                {
+                    currentGameState = GameStatus.FallCheck;
+                }
                 break;
             default:
                 break;
@@ -284,7 +299,66 @@ public class GameBoard : MonoBehaviour
 
         return isMatchMade;
     }
+    void MakeFallMoveMent()
+    {
+        for (int i = boardYSize - 1; i > 0; i--)
+        {
+            for (int j = 0; j < boardXSize; j++)
+            {
+                if(NodeBoard[i, j].nodeObj == null && NodeBoard[i-1, j].nodeObj != null)
+                {
+                    NodeBoard[i - 1, j].nodeObj.GetComponent<Node>().OrderMove(GetNodePosition(j, i));
+                    NodeBoard[i, j] = NodeBoard[i - 1, j];
+                    NodeBoard[i - 1, j].nodeObj = null;
+                    NodeBoard[i, j].nodeObj.GetComponent<Node>().SetPosition(j, i);
+                    onMoveList.Add(NodeBoard[i, j].nodeObj.GetComponent<Node>());
+                }
+            }
+        }
 
+        for (int j = 0; j < boardXSize; j++)
+        {
+            Debug.Log(NodeBoard[0, j].nodeObj);
+            if (NodeBoard[0, j].nodeObj == null)
+            {
+                int random = Random.Range(1, 5);
+
+                switch (random)
+                {
+                    case 1:
+                        NodeBoard[0, j].nodeObj = Instantiate(redNode);
+                        NodeBoard[0, j].nodeType = NodeType.Red;
+                        break;
+                    case 2:
+                        NodeBoard[0, j].nodeObj = Instantiate(BlueNode);
+                        NodeBoard[0, j].nodeType = NodeType.Blue;
+                        break;
+                    case 3:
+                        NodeBoard[0, j].nodeObj = Instantiate(GreenNode);
+                        NodeBoard[0, j].nodeType = NodeType.Green;
+                        break;
+                    case 4:
+                        NodeBoard[0, j].nodeObj = Instantiate(YellowNode);
+                        NodeBoard[0, j].nodeType = NodeType.Yellow;
+                        break;
+                    default:
+                        NodeBoard[0, j].nodeObj = Instantiate(redNode);
+                        NodeBoard[0, j].nodeType = NodeType.None;
+                        break;
+                }
+
+                NodeBoard[0, j].nodeObj.GetComponent<Node>().SetPosition(j, 0);
+
+                Transform rect = NodeBoard[0, j].nodeObj.GetComponent<Transform>();
+                rect.SetParent(this.GetComponent<Transform>());
+                rect.position = GetNodePosition(j, -1);
+
+                NodeBoard[0, j].nodeObj.GetComponent<Node>().OrderMove(GetNodePosition(j, 0));
+                onMoveList.Add(NodeBoard[0, j].nodeObj.GetComponent<Node>());
+
+            }
+        }
+    }
 
     Vector3 GetNodePosition(int xPos, int yPos)
     {
