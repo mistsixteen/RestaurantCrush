@@ -466,7 +466,7 @@ GameObject:
   - component: {fileID: 692061176}
   - component: {fileID: 692061175}
   m_Layer: 5
-  m_Name: UnityRestaurantCrush
+  m_Name: StageName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -524,7 +524,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: UnityRestaurantCrush
+  m_Text: <StageName>
 --- !u!222 &692061176
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -651,14 +651,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9038d1cb52cd3b4d8b288ed655d42f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempNode: {fileID: 1733406205276833712, guid: d0d4edb90382e2b4bb119b92c3cb44da, type: 3}
   redNode: {fileID: 1733406205276833712, guid: d0d4edb90382e2b4bb119b92c3cb44da, type: 3}
   GreenNode: {fileID: 3884827286381987062, guid: d9c38aeb65725e14cadf1916d7d3d2db, type: 3}
   BlueNode: {fileID: 5517548609941421012, guid: 64dfba5a23cc080448c149fc82031820, type: 3}
   YellowNode: {fileID: 2017584104614194412, guid: c75f9d1e111ce424791d1fa3e0406ee1, type: 3}
   baseXPos: -4
-  baseYPos: -4.5
+  baseYPos: 3.3
   NodeXDistance: 1.2
-  NodeYDistance: 1.2
+  NodeYDistance: -1.2
   boardXSize: 10
   boardYSize: 7

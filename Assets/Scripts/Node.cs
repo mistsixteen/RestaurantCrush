@@ -47,9 +47,6 @@ public class Node : MonoBehaviour
             MoveVector = (MoveTarget - transform.position) / moveFrame;
             MoveFrameLeft = moveFrame;
             currentState = NodeStatus.Moving;
-            Debug.Log(transform.position);
-            Debug.Log(MoveTarget);
-            Debug.Log(MoveVector);
         }
         else
         {
@@ -76,7 +73,6 @@ public class Node : MonoBehaviour
             case NodeStatus.Moving:
                 transform.position += MoveVector;
                 MoveFrameLeft--;
-                Debug.Log(MoveFrameLeft);
 
                 if (MoveFrameLeft == 0)
                 {
@@ -90,7 +86,6 @@ public class Node : MonoBehaviour
                         MoveTarget = moveQueue.Dequeue();
                         MoveVector = (MoveTarget - transform.position) / moveFrame;
                         MoveFrameLeft = 30;
-
                     }
                 }
                 break;
@@ -150,7 +145,7 @@ public class Node : MonoBehaviour
         }
         else if (mousePoint.x - mousePoint2.x > moveLength)
         {
-            NodeBoardObject.MovedNode(xPos, yPos, MoveType.Up);
+            NodeBoardObject.MovedNode(xPos, yPos, MoveType.Left);
             isClicked = false;
         }
     }

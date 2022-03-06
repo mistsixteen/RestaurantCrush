@@ -10,6 +10,7 @@ enum GameStatus
 }
 public enum NodeType
 {
+    None,
     Red,
     Blue,
     Green,
@@ -23,11 +24,18 @@ public enum MoveType
     Right
 }
 
+struct NodeContainer
+{
+    public GameObject nodeObj;
+    public NodeType nType;
+}
+
 public class GameBoard : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject redNode, GreenNode, BlueNode, YellowNode;
+    //Nodes
+    public GameObject redNode, GreenNode, BlueNode, YellowNode;
 
+    //Board Information
     public float baseXPos;
     public float baseYPos;
     public float NodeXDistance;
@@ -35,7 +43,7 @@ public class GameBoard : MonoBehaviour
     public int boardXSize;
     public int boardYSize;
 
-    GameObject[,] NodeBoard;
+    NodeContainer[,] NodeBoard;
 
     GameStatus currentGameState;
     int touchedXpos, touchedYpos;
@@ -63,7 +71,6 @@ public class GameBoard : MonoBehaviour
     {
         touchedXpos = xPos;
         touchedYpos = yPos;
-        Debug.Log("GameBoard : Touched " + touchedXpos + " " + touchedYpos);
     }
     
     public void ReleasedNode(int xPos, int yPos)
@@ -73,28 +80,65 @@ public class GameBoard : MonoBehaviour
             touchedXpos = -1;
             touchedYpos = -1;
         }
-            
-        Debug.Log("GameBoard : Touched " + touchedXpos + " " + touchedYpos);
     }
 
     public void MovedNode(int xPos, int yPos, MoveType mType)
     {
+        int mXPos = xPos;
+        int mYPos = yPos;
+
         if(touchedXpos == xPos && touchedYpos == yPos)
         {
-            Debug.Log("GameBoard : Released " + xPos + " " + yPos + mType);
-            Vector3 temp1 = new Vector3(baseXPos + ((float)xPos+1.0f) * NodeXDistance, baseYPos + (float)yPos * NodeYDistance, 0.0f);
-            Vector3 temp2 = new Vector3(baseXPos + (float)xPos * NodeXDistance, baseYPos + (float)yPos * NodeYDistance, 0.0f);
-            NodeBoard[yPos, xPos].GetComponent<Node>().OrderMove(temp1);
-            NodeBoard[yPos, xPos].GetComponent<Node>().OrderMove(temp2);
+            switch(mType)
+            {
+                case MoveType.Up:
+                    if (yPos > 0)
+                    {
+                        mYPos = yPos - 1;
+                    }
+                    else
+                        return;
+                    break;
+                case MoveType.Down:
+                    if (yPos < boardYSize - 1)
+                    {
+                        mYPos = yPos + 1;
+                    }
+                    else
+                        return;
+                    break;
+                case MoveType.Left:
+                    if (xPos > 0)
+                    {
+                        mXPos = xPos - 1;
+                    }
+                    break;
+                case MoveType.Right:
+                    if (xPos < boardXSize - 1)
+                    {
+                        mXPos = xPos + 1;
+                    }
+                    break;
+            }
+            Vector3 temp1 = GetNodePosition(mXPos, mYPos);
+            Vector3 temp2 = GetNodePosition(xPos, yPos);
+            NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
+            NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
+
         }
-            
+        
+    }
+
+    Vector3 GetNodePosition(int xPos, int yPos)
+    {
+        return new Vector3(baseXPos + (float)xPos * NodeXDistance, baseYPos + (float)yPos * NodeYDistance, 0.0f);
     }
 
     public void InitializeBoard()
     {
         touchedXpos = -1;
         touchedYpos = -1;
-        NodeBoard = new GameObject[boardYSize, boardXSize];
+        NodeBoard = new NodeContainer[boardYSize, boardXSize];
         for (int i = 0; i < boardYSize; i++)
         {
             for (int j = 0; j < boardXSize; j++)
@@ -103,28 +147,33 @@ public class GameBoard : MonoBehaviour
                 switch (random)
                 {
                     case 0:
-                        NodeBoard[i, j] = Instantiate(redNode);
+                        NodeBoard[i, j].nodeObj = Instantiate(redNode);
+                        NodeBoard[i, j].nType = NodeType.Red;
                         break;
                     case 1:
-                        NodeBoard[i, j] = Instantiate(GreenNode);
+                        NodeBoard[i, j].nodeObj = Instantiate(GreenNode);
+                        NodeBoard[i, j].nType = NodeType.Green;
                         break;
                     case 2:
-                        NodeBoard[i, j] = Instantiate(BlueNode);
+                        NodeBoard[i, j].nodeObj = Instantiate(BlueNode);
+                        NodeBoard[i, j].nType = NodeType.Blue;
                         break;
                     case 3:
-                        NodeBoard[i, j] = Instantiate(YellowNode);
+                        NodeBoard[i, j].nodeObj = Instantiate(YellowNode);
+                        NodeBoard[i, j].nType = NodeType.Yellow;
                         break;
                     default:
-                        NodeBoard[i, j] = Instantiate(redNode);
+                        NodeBoard[i, j].nodeObj = Instantiate(redNode);
+                        NodeBoard[i, j].nType = NodeType.None;
                         break;
                 }
 
-                Transform rect = NodeBoard[i, j].GetComponent<Transform>();
-                NodeBoard[i, j].GetComponent<Node>().SetPosition(j, i);
+                Transform rect = NodeBoard[i, j].nodeObj.GetComponent<Transform>();
+                NodeBoard[i, j].nodeObj.GetComponent<Node>().SetPosition(j, i);
 
                 rect.SetParent(this.GetComponent<Transform>());
 
-                rect.position = new Vector3(baseXPos + (float)j * NodeXDistance, baseYPos + (float)i * NodeYDistance, 0.0f);
+                rect.position = GetNodePosition(j, i);
             }
         }
         currentGameState = GameStatus.Idle;
