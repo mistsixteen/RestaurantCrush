@@ -39,8 +39,6 @@ struct NodeContainer
 
 public class GameBoard : MonoBehaviour
 {
-    //Nodes
-    public GameObject redNode, GreenNode, BlueNode, YellowNode;
 
     //Board Information
     public float baseXPos;
@@ -346,23 +344,23 @@ public class GameBoard : MonoBehaviour
                 switch (random)
                 {
                     case 1:
-                        NodeBoard[0, j].nodeObj = Instantiate(redNode);
+                        NodeBoard[0, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.RedNode);
                         NodeBoard[0, j].nodeType = NodeType.Red;
                         break;
                     case 2:
-                        NodeBoard[0, j].nodeObj = Instantiate(BlueNode);
+                        NodeBoard[0, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.BlueNode);
                         NodeBoard[0, j].nodeType = NodeType.Blue;
                         break;
                     case 3:
-                        NodeBoard[0, j].nodeObj = Instantiate(GreenNode);
+                        NodeBoard[0, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.GreenNode);
                         NodeBoard[0, j].nodeType = NodeType.Green;
                         break;
                     case 4:
-                        NodeBoard[0, j].nodeObj = Instantiate(YellowNode);
+                        NodeBoard[0, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.YellowNode);
                         NodeBoard[0, j].nodeType = NodeType.Yellow;
                         break;
                     default:
-                        NodeBoard[0, j].nodeObj = Instantiate(redNode);
+                        Debug.LogError("Unidentified Node!!!");
                         NodeBoard[0, j].nodeType = NodeType.None;
                         break;
                 }
@@ -419,23 +417,23 @@ public class GameBoard : MonoBehaviour
                 switch (random)
                 {
                     case 1:
-                        NodeBoard[i, j].nodeObj = Instantiate(redNode);
+                        NodeBoard[i, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.RedNode);
                         NodeBoard[i, j].nodeType = NodeType.Red;
                         break;
                     case 2:
-                        NodeBoard[i, j].nodeObj = Instantiate(BlueNode);
+                        NodeBoard[i, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.BlueNode);
                         NodeBoard[i, j].nodeType = NodeType.Blue;
                         break;
                     case 3:
-                        NodeBoard[i, j].nodeObj = Instantiate(GreenNode);
+                        NodeBoard[i, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.GreenNode);
                         NodeBoard[i, j].nodeType = NodeType.Green;
                         break;
                     case 4:
-                        NodeBoard[i, j].nodeObj = Instantiate(YellowNode);
+                        NodeBoard[i, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.YellowNode);
                         NodeBoard[i, j].nodeType = NodeType.Yellow;
                         break;
                     default:
-                        NodeBoard[i, j].nodeObj = Instantiate(redNode);
+                        Debug.LogError("Unidentified Node!!!");
                         NodeBoard[i, j].nodeType = NodeType.None;
                         break;
                 }
