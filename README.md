@@ -11,7 +11,7 @@
 
 
 ## 플레이 영상
-### Youtube Link(Click to Play)
+### - <a href="https://www.youtube.com/watch?v=dETpnpqn9uY" target="_blank"> Youtube Video </a>
 [![Video Label](http://img.youtube.com/vi/dETpnpqn9uY/0.jpg)](https://www.youtube.com/watch?v=dETpnpqn9uY)
 
 
