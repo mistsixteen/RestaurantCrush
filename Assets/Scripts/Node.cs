@@ -15,7 +15,7 @@ public class Node : MonoBehaviour
     private GameBoard NodeBoardObject;
 
     public float moveLength = 0.5f;
-    public int moveFrame = 30;
+    public int moveFrame = 10;
 
     private int xPos, yPos;
 
@@ -55,13 +55,12 @@ public class Node : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         NodeBoardObject = GameObject.Find("NodeBoard").GetComponent<GameBoard>();
     }
-    // Update is called once per frame
-    void Update()
+
+    void FixedUpdate()
     {
         switch(currentState)
         {
@@ -137,7 +136,8 @@ public class Node : MonoBehaviour
     public void SetDisappear()
     {
         currentState = NodeStatus.Disappearing;
-        MoveFrameLeft = 500;
+        MoveFrameLeft = 10;
+        EffectFactory.getInstance().MakeStarParticleEffect(transform.position, 5);
     }
 
     void CheckMouseMovement()

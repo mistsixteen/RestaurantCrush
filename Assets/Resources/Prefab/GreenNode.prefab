@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveLength: 0.5
+  moveFrame: 10
 --- !u!61 &3884827286381987050
 BoxCollider2D:
   m_ObjectHideFlags: 0

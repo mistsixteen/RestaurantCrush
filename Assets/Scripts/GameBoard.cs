@@ -85,7 +85,7 @@ public class GameBoard : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         switch(currentGameState)
         {
@@ -161,7 +161,7 @@ public class GameBoard : MonoBehaviour
         touchedXpos = xPos;
         touchedYpos = yPos;
     }
-    
+
     public void ReleasedNode(int xPos, int yPos)
     {
         if (touchedXpos == xPos && touchedYpos == yPos)
