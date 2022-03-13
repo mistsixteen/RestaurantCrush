@@ -6,11 +6,11 @@ public class StarParticle : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    public Vector3 MoveVector;
-    public int FrameLeft = 20;
-
-    public float moveSpeed = 0.05f;
-    public float gValue = 0.01f;
+    private Vector3 MoveVector;
+    
+    private int FrameLeft = 20;
+    private float moveSpeed = 0.45f;
+    private float gValue = 0.15f;
 
     private SpriteRenderer Renderer;
     private Coroutine particleCorutine;
@@ -31,19 +31,20 @@ public class StarParticle : MonoBehaviour
     IEnumerator ParticleFadeOut()
     {
         Color color = Renderer.color;
-        while(color.a > 0.0f)
+        while(FrameLeft >= 0)
         {
             FrameLeft--;
+
             transform.position += MoveVector * moveSpeed;
             MoveVector.y -= gValue;
             color.a -= 0.05f;
             Renderer.color = color;
-            if (FrameLeft <= 0)
-                Destroy(this.gameObject);
 
             yield return new WaitForSeconds(0.05f);
         }
-        
+
+        Destroy(this.gameObject);
+
     }
 
 }

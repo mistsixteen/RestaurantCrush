@@ -95,3 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82587e0736763584eb5a68d6cb301139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MoveVector: {x: 0, y: 0, z: 0}
+  FrameLeft: 30
+  moveSpeed: 0.1
+  gValue: 0.1
