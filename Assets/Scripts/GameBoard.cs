@@ -54,6 +54,9 @@ public class GameBoard : MonoBehaviour
 
     private Text scoreText, moveText;
 
+
+    private bool isWaiting = false;
+
     private List<Node> onMoveList;
     
     NodeContainer[,] NodeBoard;
@@ -87,6 +90,8 @@ public class GameBoard : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (isWaiting == true)
+            return;
         switch(currentGameState)
         {
             case GameStatus.FlipMoving:
@@ -131,7 +136,11 @@ public class GameBoard : MonoBehaviour
             case GameStatus.FallCheck:
                 MakeFallMoveMent();
                 if (onMoveList.Count == 0)
+                {
+                    isWaiting = true;
+                    StartCoroutine(WaitBeforenextAction());
                     currentGameState = GameStatus.MatchCheck;
+                }
                 else
                     currentGameState = GameStatus.Falling;
                 break;
@@ -242,6 +251,12 @@ public class GameBoard : MonoBehaviour
 
         }
         
+    }
+
+    IEnumerator WaitBeforenextAction()
+    {
+        yield return new WaitForSeconds(0.3f);
+        isWaiting = false;
     }
 
     bool MoveThreeMatchCheck(int xPos1, int yPos1, int xPos2, int yPos2)
