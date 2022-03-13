@@ -15,7 +15,7 @@ public class Node : MonoBehaviour
     private GameBoard NodeBoardObject;
 
     public float moveLength = 0.5f;
-    public int moveFrame = 10;
+    public int moveFrame = 30;
 
     private int xPos, yPos;
 
@@ -85,7 +85,7 @@ public class Node : MonoBehaviour
                     {
                         MoveTarget = moveQueue.Dequeue();
                         MoveVector = (MoveTarget - transform.position) / moveFrame;
-                        MoveFrameLeft = 30;
+                        MoveFrameLeft = moveFrame;
                     }
                 }
                 break;
