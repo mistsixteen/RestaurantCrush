@@ -12,7 +12,6 @@ enum GameStatus
     MatchCheck,
     FallCheck,
     Falling,
-    GameEndCheck,
     GameEnded
 }
 public enum NodeType
@@ -52,7 +51,7 @@ public class GameBoard : MonoBehaviour
     private int score;
     private int moveleft;
 
-    private Text scoreText, moveText;
+    private Text scoreText, moveText, gameOverText;
 
 
     private bool isWaiting = false;
@@ -77,6 +76,8 @@ public class GameBoard : MonoBehaviour
         onMoveList = new List<Node>();
         scoreText = GameObject.Find("CurrentScore").GetComponent<Text>();
         moveText = GameObject.Find("MoveLeft").GetComponent<Text>();
+        gameOverText = GameObject.Find("GameOverUI").GetComponent<Text>();
+        gameOverText.gameObject.SetActive(false);
         InitializeBoard();
     }
 
@@ -130,7 +131,22 @@ public class GameBoard : MonoBehaviour
                 }
                 else
                 {
-                    currentGameState = GameStatus.Idle;
+                    if (moveleft <= 0)
+                    {
+                        for (int i = 0; i < boardYSize; i++)
+                        {
+                            for (int j = 0; j < boardXSize; j++)
+                            {
+                                Node temp = NodeBoard[i, j].nodeObj.GetComponent<Node>();
+                                temp.SetDisappear();
+                                NodeBoard[i, j].nodeObj = null;
+                            }
+                        }
+                        gameOverText.gameObject.SetActive(true);
+                        currentGameState = GameStatus.GameEnded;
+                    }
+                    else
+                        currentGameState = GameStatus.Idle;
                 }
                 break;
             case GameStatus.FallCheck:
@@ -411,7 +427,7 @@ public class GameBoard : MonoBehaviour
     {
         int random;
         score = 0;
-        moveleft = 50;
+        moveleft = 10;
         touchedXpos = -1;
         touchedYpos = -1;
 
