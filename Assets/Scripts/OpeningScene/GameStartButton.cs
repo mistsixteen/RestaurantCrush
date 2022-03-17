@@ -18,7 +18,11 @@ public class GameStartButton : MonoBehaviour
     }
     public void OnMouseDown()
     {
-        Debug.Log("Load Opening Scene");
-        SceneManager.LoadScene("StageScene");
+        Debug.Log("GameStartButton");
+        StageLoadManager.GetInstance().LoadStage_Infinite();
+        if (StageLoadManager.GetInstance().isStageLoaded() == true)
+            SceneManager.LoadScene("InfiniteModeScene");
+        else
+            Debug.LogError("Stage Load Failed!!!!");
     }
 }

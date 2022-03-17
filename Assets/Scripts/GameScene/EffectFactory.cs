@@ -9,7 +9,7 @@ public class EffectFactory
 
     private static EffectFactory instance;
 
-    public static EffectFactory getInstance()
+    public static EffectFactory GetInstance()
     {
         if (instance == null)
         {

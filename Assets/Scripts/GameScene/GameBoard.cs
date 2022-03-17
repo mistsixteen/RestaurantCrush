@@ -40,16 +40,8 @@ public class GameBoard : MonoBehaviour
 {
 
     //Board Information
-    public float baseXPos;
-    public float baseYPos;
-    public float NodeXDistance;
-    public float NodeYDistance;
-    public int boardXSize;
-    public int boardYSize;
 
-    //Stage Information
-    private int score;
-    private int moveleft;
+    private StageInfo currentStage;
 
     private Text scoreText, moveText, gameOverText;
 
@@ -72,6 +64,7 @@ public class GameBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        currentStage = StageLoadManager.GetInstance().GetStageInfo();
         currentGameState = GameStatus.startingGame;
         onMoveList = new List<Node>();
         scoreText = GameObject.Find("CurrentScore").GetComponent<Text>();
@@ -84,8 +77,8 @@ public class GameBoard : MonoBehaviour
     void setUI()
     {
         string fmt = "00000000";
-        scoreText.text = score.ToString(fmt);
-        moveText.text = moveleft.ToString(fmt);
+        scoreText.text = currentStage.Score.ToString(fmt);
+        moveText.text = currentStage.MoveLeft.ToString(fmt);
     }
 
     // Update is called once per frame
@@ -113,16 +106,16 @@ public class GameBoard : MonoBehaviour
                 Debug.Log("MatchCheck");
                 if(MakeThreeMatchList() == true)
                 {
-                    for (int i = 0; i < boardYSize; i++)
+                    for (int i = 0; i < currentStage.BoardYSize; i++)
                     {
-                        for (int j = 0; j < boardXSize; j++)
+                        for (int j = 0; j < currentStage.BoardXSize; j++)
                         {
                             if(isMatched[i, j] == true)
                             {
                                 Node temp = NodeBoard[i, j].nodeObj.GetComponent<Node>();
                                 temp.SetDisappear();
                                 NodeBoard[i, j].nodeObj = null;
-                                score++;
+                                currentStage.Score++;
                             }
                         }
                     }
@@ -131,11 +124,11 @@ public class GameBoard : MonoBehaviour
                 }
                 else
                 {
-                    if (moveleft <= 0)
+                    if (currentStage.MoveLeft <= 0)
                     {
-                        for (int i = 0; i < boardYSize; i++)
+                        for (int i = 0; i < currentStage.BoardYSize; i++)
                         {
-                            for (int j = 0; j < boardXSize; j++)
+                            for (int j = 0; j < currentStage.BoardXSize; j++)
                             {
                                 Node temp = NodeBoard[i, j].nodeObj.GetComponent<Node>();
                                 temp.SetDisappear();
@@ -214,7 +207,7 @@ public class GameBoard : MonoBehaviour
                         return;
                     break;
                 case MoveType.Down:
-                    if (yPos < boardYSize - 1)
+                    if (yPos < currentStage.BoardYSize - 1)
                     {
                         mYPos = yPos + 1;
                     }
@@ -228,7 +221,7 @@ public class GameBoard : MonoBehaviour
                     }
                     break;
                 case MoveType.Right:
-                    if (xPos < boardXSize - 1)
+                    if (xPos < currentStage.BoardXSize - 1)
                     {
                         mXPos = xPos + 1;
                     }
@@ -249,7 +242,7 @@ public class GameBoard : MonoBehaviour
                 NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().SetPosition(xPos, yPos);
                 NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>().SetPosition(mXPos, mYPos);
                 currentGameState = GameStatus.Moving;
-                moveleft--;
+                currentStage.MoveLeft--;
                 setUI();
             }
             else //non -> flip
@@ -277,10 +270,10 @@ public class GameBoard : MonoBehaviour
 
     bool MoveThreeMatchCheck(int xPos1, int yPos1, int xPos2, int yPos2)
     {
-        NodeType[,] currentBoard = new NodeType[boardYSize, boardXSize];
-        for(int i = 0; i < boardYSize; i++)
+        NodeType[,] currentBoard = new NodeType[currentStage.BoardYSize, currentStage.BoardXSize];
+        for(int i = 0; i < currentStage.BoardYSize; i++)
         {
-            for(int j = 0; j < boardXSize; j++)
+            for(int j = 0; j < currentStage.BoardXSize; j++)
             {
                 currentBoard[i, j] = NodeBoard[i, j].nodeType;
             }
@@ -289,15 +282,15 @@ public class GameBoard : MonoBehaviour
         currentBoard[yPos1, xPos1] = currentBoard[yPos2, xPos2];
         currentBoard[yPos2, xPos2] = temp;
 
-        for (int i = 0; i < boardYSize; i++)
+        for (int i = 0; i < currentStage.BoardYSize; i++)
         {
-            for (int j = 0; j < boardXSize; j++)
+            for (int j = 0; j < currentStage.BoardXSize; j++)
             {
-                if (i < boardYSize - 2 && 
+                if (i < currentStage.BoardYSize - 2 && 
                     currentBoard[i, j] == currentBoard[i + 1, j] &&
                     currentBoard[i + 1, j] == currentBoard[i + 2, j])
                     return true;
-                if (j < boardXSize - 2 &&
+                if (j < currentStage.BoardXSize - 2 &&
                     currentBoard[i, j] == currentBoard[i, j + 1] &&
                     currentBoard[i, j + 1] == currentBoard[i, j + 2])
                     return true;
@@ -308,24 +301,24 @@ public class GameBoard : MonoBehaviour
     }
     bool MakeThreeMatchList()
     {
-        NodeType[,] currentBoard = new NodeType[boardYSize, boardXSize];
+        NodeType[,] currentBoard = new NodeType[currentStage.BoardYSize, currentStage.BoardXSize];
 
         bool isMatchMade = false;
 
-        for (int i = 0; i < boardYSize; i++)
+        for (int i = 0; i < currentStage.BoardYSize; i++)
         {
-            for (int j = 0; j < boardXSize; j++)
+            for (int j = 0; j < currentStage.BoardXSize; j++)
             {
                 currentBoard[i, j] = NodeBoard[i, j].nodeType;
                 isMatched[i, j] = false;
             }
         }
 
-        for (int i = 0; i < boardYSize; i++)
+        for (int i = 0; i < currentStage.BoardYSize; i++)
         {
-            for (int j = 0; j < boardXSize; j++)
+            for (int j = 0; j < currentStage.BoardXSize; j++)
             {
-                if (i < boardYSize - 2 &&
+                if (i < currentStage.BoardYSize - 2 &&
                     currentBoard[i, j] == currentBoard[i + 1, j] &&
                     currentBoard[i + 1, j] == currentBoard[i + 2, j])
                 {
@@ -334,7 +327,7 @@ public class GameBoard : MonoBehaviour
                     isMatched[i + 2, j] = true;
                     isMatchMade = true;
                 }
-                if (j < boardXSize - 2 &&
+                if (j < currentStage.BoardXSize - 2 &&
                     currentBoard[i, j] == currentBoard[i, j + 1] &&
                     currentBoard[i, j + 1] == currentBoard[i, j + 2])
                 {
@@ -351,9 +344,9 @@ public class GameBoard : MonoBehaviour
     }
     void MakeFallMoveMent()
     {
-        for (int i = boardYSize - 1; i > 0; i--)
+        for (int i = currentStage.BoardYSize - 1; i > 0; i--)
         {
-            for (int j = 0; j < boardXSize; j++)
+            for (int j = 0; j < currentStage.BoardXSize; j++)
             {
                 if(NodeBoard[i, j].nodeObj == null && NodeBoard[i-1, j].nodeObj != null)
                 {
@@ -366,7 +359,7 @@ public class GameBoard : MonoBehaviour
             }
         }
 
-        for (int j = 0; j < boardXSize; j++)
+        for (int j = 0; j < currentStage.BoardXSize; j++)
         {
             if (NodeBoard[0, j].nodeObj == null)
             {
@@ -375,19 +368,19 @@ public class GameBoard : MonoBehaviour
                 switch (random)
                 {
                     case 1:
-                        NodeBoard[0, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.RedNode);
+                        NodeBoard[0, j].nodeObj = NodeFactory.GetInstance().CreateNode(NodeList.RedNode);
                         NodeBoard[0, j].nodeType = NodeType.Red;
                         break;
                     case 2:
-                        NodeBoard[0, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.BlueNode);
+                        NodeBoard[0, j].nodeObj = NodeFactory.GetInstance().CreateNode(NodeList.BlueNode);
                         NodeBoard[0, j].nodeType = NodeType.Blue;
                         break;
                     case 3:
-                        NodeBoard[0, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.GreenNode);
+                        NodeBoard[0, j].nodeObj = NodeFactory.GetInstance().CreateNode(NodeList.GreenNode);
                         NodeBoard[0, j].nodeType = NodeType.Green;
                         break;
                     case 4:
-                        NodeBoard[0, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.YellowNode);
+                        NodeBoard[0, j].nodeObj = NodeFactory.GetInstance().CreateNode(NodeList.YellowNode);
                         NodeBoard[0, j].nodeType = NodeType.Yellow;
                         break;
                     default:
@@ -411,7 +404,7 @@ public class GameBoard : MonoBehaviour
 
     Vector3 GetNodePosition(int xPos, int yPos)
     {
-        return new Vector3(baseXPos + (float)xPos * NodeXDistance, baseYPos + (float)yPos * NodeYDistance, 0.0f);
+        return new Vector3(currentStage.BaseXPos + (float)xPos * currentStage.NodeXDistance, currentStage.BaseYPos + (float)yPos * currentStage.NodeYDistance, 0.0f);
     }
 
     bool IsInstallAble(int xPos, int yPos, NodeType currentNodeType)
@@ -426,17 +419,18 @@ public class GameBoard : MonoBehaviour
     public void InitializeBoard()
     {
         int random;
-        score = 0;
-        moveleft = 10;
+
         touchedXpos = -1;
         touchedYpos = -1;
 
-        NodeBoard = new NodeContainer[boardYSize, boardXSize];
-        isMatched = new bool[boardYSize, boardXSize];
+        Debug.Log(currentStage.BoardYSize + currentStage.BoardXSize);
 
-        for (int i = 0; i < boardYSize; i++)
+        NodeBoard = new NodeContainer[currentStage.BoardYSize, currentStage.BoardXSize];
+        isMatched = new bool[currentStage.BoardYSize, currentStage.BoardXSize];
+
+        for (int i = 0; i < currentStage.BoardYSize; i++)
         {
-            for (int j = 0; j < boardXSize; j++)
+            for (int j = 0; j < currentStage.BoardXSize; j++)
             {
                 while (true)
                 {
@@ -448,19 +442,19 @@ public class GameBoard : MonoBehaviour
                 switch (random)
                 {
                     case 1:
-                        NodeBoard[i, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.RedNode);
+                        NodeBoard[i, j].nodeObj = NodeFactory.GetInstance().CreateNode(NodeList.RedNode);
                         NodeBoard[i, j].nodeType = NodeType.Red;
                         break;
                     case 2:
-                        NodeBoard[i, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.BlueNode);
+                        NodeBoard[i, j].nodeObj = NodeFactory.GetInstance().CreateNode(NodeList.BlueNode);
                         NodeBoard[i, j].nodeType = NodeType.Blue;
                         break;
                     case 3:
-                        NodeBoard[i, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.GreenNode);
+                        NodeBoard[i, j].nodeObj = NodeFactory.GetInstance().CreateNode(NodeList.GreenNode);
                         NodeBoard[i, j].nodeType = NodeType.Green;
                         break;
                     case 4:
-                        NodeBoard[i, j].nodeObj = NodeFactory.getInstance().CreateNode(NodeList.YellowNode);
+                        NodeBoard[i, j].nodeObj = NodeFactory.GetInstance().CreateNode(NodeList.YellowNode);
                         NodeBoard[i, j].nodeType = NodeType.Yellow;
                         break;
                     default:

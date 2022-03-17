@@ -18,7 +18,11 @@ public class InfiniteModeButton : MonoBehaviour
     }
     public void OnMouseDown()
     {
-        Debug.Log("Load Opening Scene");
-        SceneManager.LoadScene("InfiniteModeScene");
+        Debug.Log("InfiniteModeButton");
+        StageLoadManager.GetInstance().LoadStage_Infinite();
+        if (StageLoadManager.GetInstance().isStageLoaded() == true)
+            SceneManager.LoadScene("InfiniteModeScene");
+        else
+            Debug.LogError("Stage Load Failed!!!!");
     }
 }

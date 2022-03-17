@@ -137,7 +137,7 @@ public class Node : MonoBehaviour
     {
         currentState = NodeStatus.Disappearing;
         MoveFrameLeft = 10;
-        EffectFactory.getInstance().MakeStarParticleEffect(transform.position, 5);
+        EffectFactory.GetInstance().MakeStarParticleEffect(transform.position, 5);
     }
 
     void CheckMouseMovement()

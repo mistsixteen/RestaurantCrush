@@ -15,7 +15,7 @@ public class NodeFactory
 
     private static NodeFactory instance;
 
-    public static NodeFactory getInstance()
+    public static NodeFactory GetInstance()
     {
         if(instance == null)
         {
