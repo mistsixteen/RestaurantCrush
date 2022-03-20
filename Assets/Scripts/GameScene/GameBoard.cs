@@ -14,6 +14,7 @@ enum GameStatus
     Falling,
     GameEnded
 }
+
 public enum NodeType
 {
     None,
@@ -22,6 +23,7 @@ public enum NodeType
     Green,
     Yellow
 }
+
 public enum MoveType
 {
     Up,
@@ -103,7 +105,7 @@ public class GameBoard : MonoBehaviour
                 }
                 break;
             case GameStatus.MatchCheck:
-                Debug.Log("MatchCheck");
+
                 if(MakeThreeMatchList() == true)
                 {
                     for (int i = 0; i < currentStage.BoardYSize; i++)
@@ -119,6 +121,7 @@ public class GameBoard : MonoBehaviour
                             }
                         }
                     }
+                    AudioManager.instance.PlayBreakSound();
                     setUI();
                     currentGameState = GameStatus.FallCheck;
                 }
@@ -244,6 +247,7 @@ public class GameBoard : MonoBehaviour
                 currentGameState = GameStatus.Moving;
                 currentStage.MoveLeft--;
                 setUI();
+                //AudioManager.instance.PlayMoveSound();
             }
             else //non -> flip
             {
@@ -256,6 +260,7 @@ public class GameBoard : MonoBehaviour
                 onMoveList.Add(NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>());
                 onMoveList.Add(NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>());
                 currentGameState = GameStatus.FlipMoving;
+                //AudioManager.instance.PlayMoveSound();
             }
 
         }
@@ -422,8 +427,6 @@ public class GameBoard : MonoBehaviour
 
         touchedXpos = -1;
         touchedYpos = -1;
-
-        Debug.Log(currentStage.BoardYSize + currentStage.BoardXSize);
 
         NodeBoard = new NodeContainer[currentStage.BoardYSize, currentStage.BoardXSize];
         isMatched = new bool[currentStage.BoardYSize, currentStage.BoardXSize];
