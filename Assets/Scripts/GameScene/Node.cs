@@ -13,6 +13,7 @@ enum NodeStatus
 public class Node : MonoBehaviour
 {
     private GameBoard NodeBoardObject;
+    private Transform myTransform;
 
     public float moveLength = 0.5f;
     public int moveFrame = 30;
@@ -107,7 +108,7 @@ public class Node : MonoBehaviour
     public void OnMouseDown()
     {
         //toDo : NodeBoard에 isClicked Check 요청
-        Debug.Log("OnMouseDown");
+
         if(CanMove == true && NodeBoardObject.IsClickAble())
         {
             isClicked = true;
@@ -168,5 +169,14 @@ public class Node : MonoBehaviour
             NodeBoardObject.MovedNode(xPos, yPos, MoveType.Left);
             isClicked = false;
         }
+    }
+
+    public Transform GetTransform()
+    { 
+        if(myTransform == null)
+        {
+            myTransform = this.gameObject.GetComponent<Transform>(); 
+        }
+        return myTransform;
     }
 }

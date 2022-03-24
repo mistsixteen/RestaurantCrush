@@ -34,7 +34,7 @@ public enum MoveType
 
 struct NodeContainer
 {
-    public GameObject nodeObj;
+    public Node nodeObj;
     public NodeType nodeType;
 }
 
@@ -113,7 +113,7 @@ public class GameBoard : MonoBehaviour
                         {
                             if(isMatched[i, j] == true)
                             {
-                                Node temp = NodeBoard[i, j].nodeObj.GetComponent<Node>();
+                                Node temp = NodeBoard[i, j].nodeObj;
                                 temp.SetDisappear();
                                 NodeBoard[i, j].nodeObj = null;
                                 currentStage.Score++;
@@ -132,7 +132,7 @@ public class GameBoard : MonoBehaviour
                         {
                             for (int j = 0; j < currentStage.BoardXSize; j++)
                             {
-                                Node temp = NodeBoard[i, j].nodeObj.GetComponent<Node>();
+                                Node temp = NodeBoard[i, j].nodeObj;
                                 temp.SetDisappear();
                                 NodeBoard[i, j].nodeObj = null;
                             }
@@ -235,15 +235,15 @@ public class GameBoard : MonoBehaviour
             {
                 Vector3 temp1 = GetNodePosition(mXPos, mYPos);
                 Vector3 temp2 = GetNodePosition(xPos, yPos);
-                NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
-                NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
-                onMoveList.Add(NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>());
-                onMoveList.Add(NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>());
+                NodeBoard[yPos, xPos].nodeObj.OrderMove(temp1);
+                NodeBoard[mYPos, mXPos].nodeObj.OrderMove(temp2);
+                onMoveList.Add(NodeBoard[yPos, xPos].nodeObj);
+                onMoveList.Add(NodeBoard[mYPos, mXPos].nodeObj);
                 NodeContainer temp = NodeBoard[yPos, xPos];
                 NodeBoard[yPos, xPos] = NodeBoard[mYPos, mXPos];
                 NodeBoard[mYPos, mXPos] = temp;
-                NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().SetPosition(xPos, yPos);
-                NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>().SetPosition(mXPos, mYPos);
+                NodeBoard[yPos, xPos].nodeObj.SetPosition(xPos, yPos);
+                NodeBoard[mYPos, mXPos].nodeObj.SetPosition(mXPos, mYPos);
                 currentGameState = GameStatus.Moving;
                 currentStage.MoveLeft--;
                 setUI();
@@ -253,13 +253,15 @@ public class GameBoard : MonoBehaviour
             {
                 Vector3 temp1 = GetNodePosition(mXPos, mYPos);
                 Vector3 temp2 = GetNodePosition(xPos, yPos);
-                NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
-                NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
-                NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>().OrderMove(temp2);
-                NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>().OrderMove(temp1);
-                onMoveList.Add(NodeBoard[yPos, xPos].nodeObj.GetComponent<Node>());
-                onMoveList.Add(NodeBoard[mYPos, mXPos].nodeObj.GetComponent<Node>());
+                NodeBoard[yPos, xPos].nodeObj.OrderMove(temp1);
+                NodeBoard[yPos, xPos].nodeObj.OrderMove(temp2);
+                NodeBoard[mYPos, mXPos].nodeObj.OrderMove(temp2);
+                NodeBoard[mYPos, mXPos].nodeObj.OrderMove(temp1);
+                onMoveList.Add(NodeBoard[yPos, xPos].nodeObj);
+                onMoveList.Add(NodeBoard[mYPos, mXPos].nodeObj);
                 currentGameState = GameStatus.FlipMoving;
+
+                //Move sound 적당한걸 못 찾음!!
                 //AudioManager.instance.PlayMoveSound();
             }
 
@@ -355,11 +357,11 @@ public class GameBoard : MonoBehaviour
             {
                 if(NodeBoard[i, j].nodeObj == null && NodeBoard[i-1, j].nodeObj != null)
                 {
-                    NodeBoard[i - 1, j].nodeObj.GetComponent<Node>().OrderMove(GetNodePosition(j, i));
+                    NodeBoard[i - 1, j].nodeObj.OrderMove(GetNodePosition(j, i));
                     NodeBoard[i, j] = NodeBoard[i - 1, j];
                     NodeBoard[i - 1, j].nodeObj = null;
-                    NodeBoard[i, j].nodeObj.GetComponent<Node>().SetPosition(j, i);
-                    onMoveList.Add(NodeBoard[i, j].nodeObj.GetComponent<Node>());
+                    NodeBoard[i, j].nodeObj.SetPosition(j, i);
+                    onMoveList.Add(NodeBoard[i, j].nodeObj);
                 }
             }
         }
@@ -394,14 +396,14 @@ public class GameBoard : MonoBehaviour
                         break;
                 }
 
-                NodeBoard[0, j].nodeObj.GetComponent<Node>().SetPosition(j, 0);
+                NodeBoard[0, j].nodeObj.SetPosition(j, 0);
 
-                Transform rect = NodeBoard[0, j].nodeObj.GetComponent<Transform>();
+                Transform rect = NodeBoard[0, j].nodeObj.GetTransform();
                 rect.SetParent(this.GetComponent<Transform>());
                 rect.position = GetNodePosition(j, -1);
 
-                NodeBoard[0, j].nodeObj.GetComponent<Node>().OrderMove(GetNodePosition(j, 0));
-                onMoveList.Add(NodeBoard[0, j].nodeObj.GetComponent<Node>());
+                NodeBoard[0, j].nodeObj.OrderMove(GetNodePosition(j, 0));
+                onMoveList.Add(NodeBoard[0, j].nodeObj);
 
             }
         }
@@ -466,8 +468,8 @@ public class GameBoard : MonoBehaviour
                         break;
                 }
 
-                Transform rect = NodeBoard[i, j].nodeObj.GetComponent<Transform>();
-                NodeBoard[i, j].nodeObj.GetComponent<Node>().SetPosition(j, i);
+                Transform rect = NodeBoard[i, j].nodeObj.GetTransform();
+                NodeBoard[i, j].nodeObj.SetPosition(j, i);
 
                 rect.SetParent(this.GetComponent<Transform>());
 

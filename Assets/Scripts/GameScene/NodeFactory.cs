@@ -32,7 +32,7 @@ public class NodeFactory
         YellowNode = Resources.Load<GameObject>("Prefab/YellowNode");
     }
 
-    public GameObject CreateNode(NodeList type)
+    public Node CreateNode(NodeList type)
     {
         GameObject temp;
         switch (type)
@@ -54,6 +54,6 @@ public class NodeFactory
                 temp = GameObject.Instantiate(RedNode);
                 break;
         }
-        return temp;
+        return temp.GetComponent<Node>();
     }
 }
