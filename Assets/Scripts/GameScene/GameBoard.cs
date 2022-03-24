@@ -277,7 +277,7 @@ public class GameBoard : MonoBehaviour
             for(int j = 0; j < currentStage.BoardXSize; j++)
             {
                 if (NodeBoard[i, j] != null)
-                    currentBoard[i, j] = NodeBoard[i, j].nodeType;
+                    currentBoard[i, j] = NodeBoard[i, j].NodeType;
                 else
                     currentBoard[i, j] = NodeType.None;
             }
@@ -315,7 +315,7 @@ public class GameBoard : MonoBehaviour
             {
                 if (NodeBoard[i, j] != null)
                 {
-                    currentBoard[i, j] = NodeBoard[i, j].nodeType;
+                    currentBoard[i, j] = NodeBoard[i, j].NodeType;
                 }
                 else
                     currentBoard[i, j] = NodeType.None;
@@ -381,23 +381,23 @@ public class GameBoard : MonoBehaviour
                 {
                     case 1:
                         NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.RedNode);
-                        NodeBoard[0, j].nodeType = NodeType.Red;
+                        NodeBoard[0, j].NodeType = NodeType.Red;
                         break;
                     case 2:
                         NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.BlueNode);
-                        NodeBoard[0, j].nodeType = NodeType.Blue;
+                        NodeBoard[0, j].NodeType = NodeType.Blue;
                         break;
                     case 3:
                         NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.GreenNode);
-                        NodeBoard[0, j].nodeType = NodeType.Green;
+                        NodeBoard[0, j].NodeType = NodeType.Green;
                         break;
                     case 4:
                         NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.YellowNode);
-                        NodeBoard[0, j].nodeType = NodeType.Yellow;
+                        NodeBoard[0, j].NodeType = NodeType.Yellow;
                         break;
                     default:
                         Debug.LogError("Unidentified Node!!!");
-                        NodeBoard[0, j].nodeType = NodeType.None;
+                        NodeBoard[0, j].NodeType = NodeType.None;
                         break;
                 }
 
@@ -423,9 +423,9 @@ public class GameBoard : MonoBehaviour
     {
         if (currentNodeType == NodeType.None)
             return true;
-        if (xPos > 1 && NodeBoard[yPos, xPos - 1].nodeType == currentNodeType && NodeBoard[yPos, xPos - 2].nodeType == currentNodeType)
+        if (xPos > 1 && NodeBoard[yPos, xPos - 1].NodeType == currentNodeType && NodeBoard[yPos, xPos - 2].NodeType == currentNodeType)
             return false;
-        if (yPos > 1 && NodeBoard[yPos - 1, xPos].nodeType == currentNodeType && NodeBoard[yPos - 1, xPos].nodeType == currentNodeType)
+        if (yPos > 1 && NodeBoard[yPos - 1, xPos].NodeType == currentNodeType && NodeBoard[yPos - 1, xPos].NodeType == currentNodeType)
             return false;
         return true;
     }
@@ -444,7 +444,7 @@ public class GameBoard : MonoBehaviour
         {
             for (int j = 0; j < currentStage.BoardXSize; j++)
             {
-                if (i == currentStage.BoardYSize - 2)
+                if (i == currentStage.BoardYSize - 3)
                 {
                     //임시 : xNode 테스트용
                     random = 5;
@@ -462,33 +462,39 @@ public class GameBoard : MonoBehaviour
                 switch (random)
                 {
                     /*
-                     * TODO : nodeType 세팅 부분을 Prefab에 내재화
+                     * TODO : NodeType 세팅 부분을 Prefab에 내재화
                      *        or NodeFactory에서 수행
                      */
                     case 1:
                         NodeBoard[i, j] = NodeFactory.GetInstance().CreateNode(NodeList.RedNode);
-                        NodeBoard[i, j].nodeType = NodeType.Red;
+                        NodeBoard[i, j].NodeType = NodeType.Red;
                         break;
                     case 2:
                         NodeBoard[i, j] = NodeFactory.GetInstance().CreateNode(NodeList.BlueNode);
-                        NodeBoard[i, j].nodeType = NodeType.Blue;
+                        NodeBoard[i, j].NodeType = NodeType.Blue;
                         break;
                     case 3:
                         NodeBoard[i, j] = NodeFactory.GetInstance().CreateNode(NodeList.GreenNode);
-                        NodeBoard[i, j].nodeType = NodeType.Green;
+                        NodeBoard[i, j].NodeType = NodeType.Green;
                         break;
                     case 4:
                         NodeBoard[i, j] = NodeFactory.GetInstance().CreateNode(NodeList.YellowNode);
-                        NodeBoard[i, j].nodeType = NodeType.Yellow;
+                        NodeBoard[i, j].NodeType = NodeType.Yellow;
                         break;
                     case 5:
                         NodeBoard[i, j] = NodeFactory.GetInstance().CreateNode(NodeList.XNode);
-                        NodeBoard[i, j].nodeType = NodeType.None;
+                        NodeBoard[i, j].NodeType = NodeType.None;
+                        NodeBoard[i, j].CanMove = false;
                         break;
                     default:
                         Debug.LogError("Unidentified Node!!!");
-                        NodeBoard[i, j].nodeType = NodeType.None;
+                        NodeBoard[i, j].NodeType = NodeType.None;
                         break;
+                }
+
+                if(i == currentStage.BoardYSize - 4)
+                {
+                    NodeBoard[i, j].OnIced();
                 }
 
                 Transform rect = NodeBoard[i, j].GetTransform();

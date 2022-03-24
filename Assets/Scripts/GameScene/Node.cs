@@ -32,6 +32,7 @@ public class Node : MonoBehaviour
 
     private Vector3 mousePoint;
     private bool isClicked;
+    private bool isIced;
     private NodeStatus currentState;
 
     private Queue<Vector3> moveQueue;
@@ -40,18 +41,62 @@ public class Node : MonoBehaviour
     private Vector3 MoveVector;
     private int MoveFrameLeft;
 
-    public NodeType nodeType { get; set; }
-    public bool CanMove;
+    private NodeType nodeType;
+
+    public NodeType NodeType
+    {
+        get
+        {
+            if (isIced == true)
+                return NodeType.None;
+            else
+                return nodeType;
+        }
+        set
+        {
+            nodeType = value;
+        }
+    }
+
+    private bool canMove;
+
+    public bool CanMove
+    {
+        get
+        {
+            if (isIced == true)
+                return false;
+            else
+                return canMove;
+        }
+        set
+        {
+            canMove = value;
+        }
+    }
 
     public Node()
     {
         isClicked = false;
-        CanMove = true;
+        canMove = true;
+        isIced = false;
         xPos = 0;
         yPos = 0;
         MoveFrameLeft = 0;
         moveQueue = new Queue<Vector3>();
         currentState = NodeStatus.Idle;
+    }
+
+    public void OnIced()
+    {
+        this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Square");
+        isIced = true;
+    }
+    public void OnMelted()
+    {
+        this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Circle");
+        isIced = false;
+
     }
 
     public void OrderMove(Vector3 vTarget)
