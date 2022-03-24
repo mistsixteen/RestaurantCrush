@@ -10,6 +10,8 @@ enum NodeStatus
     Disappearing,
 }
 
+
+
 public class Node : MonoBehaviour
 {
     private GameBoard NodeBoardObject;

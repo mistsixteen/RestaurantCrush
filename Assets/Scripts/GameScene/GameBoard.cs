@@ -116,6 +116,7 @@ public class GameBoard : MonoBehaviour
                                 Node temp = NodeBoard[i, j].nodeObj;
                                 temp.SetDisappear();
                                 NodeBoard[i, j].nodeObj = null;
+                                NodeBoard[i, j].nodeType = NodeType.None;
                                 currentStage.Score++;
                             }
                         }
@@ -135,6 +136,7 @@ public class GameBoard : MonoBehaviour
                                 Node temp = NodeBoard[i, j].nodeObj;
                                 temp.SetDisappear();
                                 NodeBoard[i, j].nodeObj = null;
+                                NodeBoard[i, j].nodeType = NodeType.None;
                             }
                         }
                         gameOverText.gameObject.SetActive(true);
@@ -196,9 +198,9 @@ public class GameBoard : MonoBehaviour
         int mXPos = xPos;
         int mYPos = yPos;
 
-        if(touchedXpos == xPos && touchedYpos == yPos)
+        if (touchedXpos == xPos && touchedYpos == yPos)
         {
-            switch(mType)
+            switch (mType)
             {
                 case MoveType.Up:
                     if (yPos > 0)
@@ -221,15 +223,22 @@ public class GameBoard : MonoBehaviour
                     {
                         mXPos = xPos - 1;
                     }
+                    else
+                        return;
                     break;
                 case MoveType.Right:
                     if (xPos < currentStage.BoardXSize - 1)
                     {
                         mXPos = xPos + 1;
                     }
+                    else
+                        return;
                     break;
             }
 
+            if (NodeBoard[yPos, xPos].nodeObj == null || NodeBoard[mYPos, mXPos].nodeObj == null
+                || NodeBoard[yPos, xPos].nodeObj.CanMove == false || NodeBoard[mYPos, mXPos].nodeObj.CanMove == false)
+                return;
 
             if (MoveThreeMatchCheck(xPos, yPos, mXPos, mYPos)) //3-matched
             {
@@ -325,6 +334,9 @@ public class GameBoard : MonoBehaviour
         {
             for (int j = 0; j < currentStage.BoardXSize; j++)
             {
+                if (currentBoard[i, j] == NodeType.None)
+                    continue;
+
                 if (i < currentStage.BoardYSize - 2 &&
                     currentBoard[i, j] == currentBoard[i + 1, j] &&
                     currentBoard[i + 1, j] == currentBoard[i + 2, j])
@@ -355,7 +367,7 @@ public class GameBoard : MonoBehaviour
         {
             for (int j = 0; j < currentStage.BoardXSize; j++)
             {
-                if(NodeBoard[i, j].nodeObj == null && NodeBoard[i-1, j].nodeObj != null)
+                if(NodeBoard[i, j].nodeObj == null && NodeBoard[i-1, j].nodeObj != null && NodeBoard[i-1, j].nodeObj.CanMove == true)
                 {
                     NodeBoard[i - 1, j].nodeObj.OrderMove(GetNodePosition(j, i));
                     NodeBoard[i, j] = NodeBoard[i - 1, j];
@@ -416,6 +428,8 @@ public class GameBoard : MonoBehaviour
 
     bool IsInstallAble(int xPos, int yPos, NodeType currentNodeType)
     {
+        if (currentNodeType == NodeType.None)
+            return true;
         if (xPos > 1 && NodeBoard[yPos, xPos - 1].nodeType == currentNodeType && NodeBoard[yPos, xPos - 2].nodeType == currentNodeType)
             return false;
         if (yPos > 1 && NodeBoard[yPos - 1, xPos].nodeType == currentNodeType && NodeBoard[yPos - 1, xPos].nodeType == currentNodeType)
@@ -437,11 +451,19 @@ public class GameBoard : MonoBehaviour
         {
             for (int j = 0; j < currentStage.BoardXSize; j++)
             {
-                while (true)
+                if (i == currentStage.BoardYSize - 2)
                 {
-                    random = Random.Range(1, 5);
-                    if (IsInstallAble(j, i, (NodeType)(random)) == true)
-                        break;
+                    //임시 : xNode 테스트용
+                    random = 5;
+                }
+                else
+                { 
+                    while (true)
+                    {
+                        random = Random.Range(1, 5);
+                        if (IsInstallAble(j, i, (NodeType)(random)) == true)
+                            break;
+                    }
                 }
                 
                 switch (random)
@@ -461,6 +483,10 @@ public class GameBoard : MonoBehaviour
                     case 4:
                         NodeBoard[i, j].nodeObj = NodeFactory.GetInstance().CreateNode(NodeList.YellowNode);
                         NodeBoard[i, j].nodeType = NodeType.Yellow;
+                        break;
+                    case 5:
+                        NodeBoard[i, j].nodeObj = NodeFactory.GetInstance().CreateNode(NodeList.XNode);
+                        NodeBoard[i, j].nodeType = NodeType.None;
                         break;
                     default:
                         Debug.LogError("Unidentified Node!!!");

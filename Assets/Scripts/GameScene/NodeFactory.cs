@@ -7,11 +7,12 @@ public enum NodeList
     RedNode,
     GreenNode,
     BlueNode,
-    YellowNode
+    YellowNode,
+    XNode
 }
 public class NodeFactory
 {
-    private GameObject RedNode, GreenNode, BlueNode, YellowNode;
+    private GameObject RedNode, GreenNode, BlueNode, YellowNode, XNode;
 
     private static NodeFactory instance;
 
@@ -30,6 +31,7 @@ public class NodeFactory
         GreenNode = Resources.Load<GameObject>("Prefab/GreenNode");
         BlueNode = Resources.Load<GameObject>("Prefab/BlueNode");
         YellowNode = Resources.Load<GameObject>("Prefab/YellowNode");
+        XNode = Resources.Load<GameObject>("Prefab/XNode");
     }
 
     public Node CreateNode(NodeList type)
@@ -49,9 +51,12 @@ public class NodeFactory
             case NodeList.YellowNode:
                 temp = GameObject.Instantiate(YellowNode);
                 break;
+            case NodeList.XNode:
+                temp = GameObject.Instantiate(XNode);
+                break;
             default:
                 //Todo : Make ErrorNode Prefab
-                temp = GameObject.Instantiate(RedNode);
+                temp = GameObject.Instantiate(XNode);
                 break;
         }
         return temp.GetComponent<Node>();
