@@ -10,11 +10,11 @@
 
 ## 플레이 스크린샷
 
-![RestaurantCrush_v0 004 screenshot](https://user-images.githubusercontent.com/30260233/158220220-db27972c-cf19-479a-bfac-b0f796aa0f2a.PNG)
+![RestaurantCrush_v0 005 screenshot](https://user-images.githubusercontent.com/30260233/159990581-08a32907-ea30-49b0-ab08-c68bb0bf48a7.PNG)
 
 
 ## 플레이 영상
-### - <a href="https://www.youtube.com/watch?v=x2vvQtkuVsY" target="_blank"> Youtube Video </a>
-[![Video Label](http://img.youtube.com/vi/x2vvQtkuVsY/0.jpg)](https://www.youtube.com/watch?v=x2vvQtkuVsY)
+### - <a href="https://www.youtube.com/watch?v=3L4GHkTTcVQ" target="_blank"> Youtube Video </a>
+[![Video Label](http://img.youtube.com/vi/3L4GHkTTcVQ/0.jpg)](https://www.youtube.com/watch?v=3L4GHkTTcVQ)
 
 <br/>
