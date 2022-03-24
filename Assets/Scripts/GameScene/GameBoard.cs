@@ -105,7 +105,6 @@ public class GameBoard : MonoBehaviour
                 }
                 break;
             case GameStatus.MatchCheck:
-
                 if(MakeThreeMatchList() == true)
                 {
                     for (int i = 0; i < currentStage.BoardYSize; i++)
@@ -230,8 +229,9 @@ public class GameBoard : MonoBehaviour
                     }
                     break;
             }
-            
-            if(MoveThreeMatchCheck(xPos, yPos, mXPos, mYPos)) //3-matched
+
+
+            if (MoveThreeMatchCheck(xPos, yPos, mXPos, mYPos)) //3-matched
             {
                 Vector3 temp1 = GetNodePosition(mXPos, mYPos);
                 Vector3 temp2 = GetNodePosition(xPos, yPos);

@@ -21,7 +21,6 @@ public class Node : MonoBehaviour
 
     private Vector3 mousePoint;
     private bool isClicked;
-    
     private NodeStatus currentState;
 
     private Queue<Vector3> moveQueue;
@@ -30,9 +29,13 @@ public class Node : MonoBehaviour
     private Vector3 MoveVector;
     private int MoveFrameLeft;
 
+    [SerializeField]
+    public bool CanMove;
+
     public Node()
     {
         isClicked = false;
+        CanMove = true;
         xPos = 0;
         yPos = 0;
         MoveFrameLeft = 0;
@@ -104,7 +107,8 @@ public class Node : MonoBehaviour
     public void OnMouseDown()
     {
         //toDo : NodeBoard에 isClicked Check 요청
-        if(NodeBoardObject.IsClickAble())
+        Debug.Log("OnMouseDown");
+        if(CanMove == true && NodeBoardObject.IsClickAble())
         {
             isClicked = true;
             NodeBoardObject.TouchedNode(xPos, yPos);

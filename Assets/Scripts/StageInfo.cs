@@ -28,5 +28,4 @@ public class StageInfo
         CurrentStageType = StageType.StageTypeNone;
     }
 
-
 }
