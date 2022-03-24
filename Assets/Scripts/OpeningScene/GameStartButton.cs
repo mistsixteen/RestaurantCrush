@@ -16,7 +16,7 @@ public class GameStartButton : MonoBehaviour
     {
 
     }
-    public void OnMouseDown()
+    public void OnMouseUp()
     {
         Debug.Log("GameStartButton");
         StageLoadManager.GetInstance().LoadStage_Infinite();

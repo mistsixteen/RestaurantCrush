@@ -16,7 +16,7 @@ public class GameOverButton : MonoBehaviour
     {
 
     }
-    public void OnMouseDown()
+    public void OnMouseUp()
     {
         Debug.Log("Load Opening Scene");
         SceneManager.LoadScene("OpeningScene");
