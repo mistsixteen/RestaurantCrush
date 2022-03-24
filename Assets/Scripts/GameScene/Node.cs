@@ -10,6 +10,14 @@ enum NodeStatus
     Disappearing,
 }
 
+public enum NodeType
+{
+    None,
+    Red,
+    Blue,
+    Green,
+    Yellow
+}
 
 
 public class Node : MonoBehaviour
@@ -32,7 +40,7 @@ public class Node : MonoBehaviour
     private Vector3 MoveVector;
     private int MoveFrameLeft;
 
-    [SerializeField]
+    public NodeType nodeType { get; set; }
     public bool CanMove;
 
     public Node()
