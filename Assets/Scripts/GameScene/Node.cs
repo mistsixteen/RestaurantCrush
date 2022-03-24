@@ -92,11 +92,15 @@ public class Node : MonoBehaviour
         this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Square");
         isIced = true;
     }
-    public void OnMelted()
-    {
-        this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Circle");
-        isIced = false;
 
+    public void OnAffected()
+    {
+        if(isIced == true)
+        {
+            this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Circle");
+            isIced = false;
+            EffectFactory.GetInstance().MakeIceParticleEffect(transform.position, 5);
+        }
     }
 
     public void OrderMove(Vector3 vTarget)

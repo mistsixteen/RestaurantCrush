@@ -40,6 +40,7 @@ public class GameBoard : MonoBehaviour
 
     Node[,] NodeBoard;
     bool[,] isMatched;
+    bool[,] isAffected;
 
     GameStatus currentGameState;
     int touchedXpos, touchedYpos;
@@ -103,9 +104,21 @@ public class GameBoard : MonoBehaviour
                                 temp.SetDisappear();
                                 NodeBoard[i, j] = null;
                                 currentStage.Score++;
+                                setAffection(i, j);
                             }
                         }
                     }
+                    for (int i = 0; i < currentStage.BoardYSize; i++)
+                    {
+                        for (int j = 0; j < currentStage.BoardXSize; j++)
+                        {
+                            if (isAffected[i, j] == true && NodeBoard[i, j] != null)
+                            {
+                                NodeBoard[i, j].OnAffected();
+                            }
+                        }
+                    }
+
                     AudioManager.instance.PlayBreakSound();
                     setUI();
                     currentGameState = GameStatus.FallCheck;
@@ -320,6 +333,7 @@ public class GameBoard : MonoBehaviour
                 else
                     currentBoard[i, j] = NodeType.None;
                 isMatched[i, j] = false;
+                isAffected[i, j] = false;
             }
         }
 
@@ -439,6 +453,7 @@ public class GameBoard : MonoBehaviour
 
         NodeBoard = new Node[currentStage.BoardYSize, currentStage.BoardXSize];
         isMatched = new bool[currentStage.BoardYSize, currentStage.BoardXSize];
+        isAffected = new bool[currentStage.BoardYSize, currentStage.BoardXSize];
 
         for (int i = 0; i < currentStage.BoardYSize; i++)
         {
@@ -507,5 +522,25 @@ public class GameBoard : MonoBehaviour
         }
         currentGameState = GameStatus.Idle;
         setUI();
+    }
+
+    void setAffection(int yPos, int xPos)
+    {
+        if (yPos > 0)
+        {
+            isAffected[yPos - 1, xPos] = true;
+        }
+        if (yPos < currentStage.BoardYSize - 1)
+        {
+            isAffected[yPos + 1, xPos] = true;
+        }
+        if (xPos > 0)
+        {
+            isAffected[yPos, xPos - 1] = true;
+        }
+        if (xPos < currentStage.BoardXSize - 1)
+        {
+            isAffected[yPos, xPos + 1] = true;
+        }
     }
 }

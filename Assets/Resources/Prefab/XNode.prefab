@@ -98,7 +98,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveLength: 0.5
   moveFrame: 10
-  canMove: 0
 --- !u!61 &3884827286381987050
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -123,5 +122,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.2}
+  m_Size: {x: 0.6, y: 0.6}
   m_EdgeRadius: 0
