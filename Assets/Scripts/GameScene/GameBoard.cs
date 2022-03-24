@@ -238,7 +238,7 @@ public class GameBoard : MonoBehaviour
                 || NodeBoard[yPos, xPos].CanMove == false || NodeBoard[mYPos, mXPos].CanMove == false)
                 return;
 
-            if (MoveThreeMatchCheck(xPos, yPos, mXPos, mYPos)) //3-matched
+            if (MoveThreeMatchCheck(xPos, yPos, mXPos, mYPos) == true) //3-matched
             {
                 Vector3 temp1 = GetNodePosition(mXPos, mYPos);
                 Vector3 temp2 = GetNodePosition(xPos, yPos);
@@ -303,11 +303,11 @@ public class GameBoard : MonoBehaviour
         {
             for (int j = 0; j < currentStage.BoardXSize; j++)
             {
-                if (i < currentStage.BoardYSize - 2 && 
+                if (i < currentStage.BoardYSize - 2 && currentBoard[i, j] != NodeType.None &&
                     currentBoard[i, j] == currentBoard[i + 1, j] &&
                     currentBoard[i + 1, j] == currentBoard[i + 2, j])
                     return true;
-                if (j < currentStage.BoardXSize - 2 &&
+                if (j < currentStage.BoardXSize - 2 && currentBoard[i, j] != NodeType.None &&
                     currentBoard[i, j] == currentBoard[i, j + 1] &&
                     currentBoard[i, j + 1] == currentBoard[i, j + 2])
                     return true;
