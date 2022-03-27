@@ -21,7 +21,7 @@ public class InfiniteModeButton : MonoBehaviour
         Debug.Log("InfiniteModeButton");
         StageLoadManager.GetInstance().LoadStage_Infinite();
         if (StageLoadManager.GetInstance().isStageLoaded() == true)
-            SceneManager.LoadScene("InfiniteModeScene");
+            SceneManager.LoadScene("GameScene");
         else
             Debug.LogError("Stage Load Failed!!!!");
     }

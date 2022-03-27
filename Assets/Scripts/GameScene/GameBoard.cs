@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 enum GameStatus
 {
@@ -30,10 +29,6 @@ public class GameBoard : MonoBehaviour
     //Board Information
 
     private StageInfo currentStage;
-
-    private Text scoreText, moveText, gameOverText;
-
-
     private bool isWaiting = false;
 
     private List<Node> onMoveList;
@@ -43,6 +38,8 @@ public class GameBoard : MonoBehaviour
     bool[,] isAffected;
 
     GameStatus currentGameState;
+    GameSceneUI gameUI;
+
     int touchedXpos, touchedYpos;
 
     public GameBoard()
@@ -56,19 +53,10 @@ public class GameBoard : MonoBehaviour
         currentStage = StageLoadManager.GetInstance().GetStageInfo();
         currentGameState = GameStatus.startingGame;
         onMoveList = new List<Node>();
-        scoreText = GameObject.Find("CurrentScore").GetComponent<Text>();
-        moveText = GameObject.Find("MoveLeft").GetComponent<Text>();
-        gameOverText = GameObject.Find("GameOverUI").GetComponent<Text>();
-        gameOverText.gameObject.SetActive(false);
         InitializeBoard();
     }
 
-    void setUI()
-    {
-        string fmt = "00000000";
-        scoreText.text = currentStage.Score.ToString(fmt);
-        moveText.text = currentStage.MoveLeft.ToString(fmt);
-    }
+
 
     // Update is called once per frame
     void FixedUpdate()
@@ -120,7 +108,7 @@ public class GameBoard : MonoBehaviour
                     }
 
                     AudioManager.instance.PlayBreakSound();
-                    setUI();
+                    GameSceneUI.instance.UpdateUI(currentStage);
                     currentGameState = GameStatus.FallCheck;
                 }
                 else
@@ -137,7 +125,7 @@ public class GameBoard : MonoBehaviour
                                 NodeBoard[i, j] = null;
                             }
                         }
-                        gameOverText.gameObject.SetActive(true);
+                        GameSceneUI.instance.GameOverScreen();
                         currentGameState = GameStatus.GameEnded;
                     }
                     else
@@ -253,7 +241,7 @@ public class GameBoard : MonoBehaviour
                 NodeBoard[mYPos, mXPos].SetPosition(mXPos, mYPos);
                 currentGameState = GameStatus.Moving;
                 currentStage.MoveLeft--;
-                setUI();
+                GameSceneUI.instance.UpdateUI(currentStage);
                 //AudioManager.instance.PlayMoveSound();
             }
             else //non -> flip
@@ -521,7 +509,7 @@ public class GameBoard : MonoBehaviour
             }
         }
         currentGameState = GameStatus.Idle;
-        setUI();
+        GameSceneUI.instance.UpdateUI(currentStage);
     }
 
     void setAffection(int yPos, int xPos)
