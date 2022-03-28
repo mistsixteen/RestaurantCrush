@@ -26,11 +26,7 @@ public enum MoveType
 public class GameBoard : MonoBehaviour
 {
 
-    //Board Information
-
     private StageInfo currentStage;
-    private bool isWaiting = false;
-
     private List<Node> onMoveList;
 
     Node[,] NodeBoard;
@@ -40,6 +36,9 @@ public class GameBoard : MonoBehaviour
     GameStatus currentGameState;
 
     int touchedXpos, touchedYpos;
+
+
+    private Coroutine routine_MainLoop;
 
     public GameBoard()
     {
@@ -53,118 +52,122 @@ public class GameBoard : MonoBehaviour
         currentGameState = GameStatus.startingGame;
         onMoveList = new List<Node>();
         InitializeBoard();
+        routine_MainLoop = StartCoroutine(MainLoop());
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
+    IEnumerator MainLoop()
     {
-        if (isWaiting == true)
-            return;
-        switch(currentGameState)
+        while (currentGameState != GameStatus.GameEnded)
         {
-            case GameStatus.FlipMoving:
-                onMoveList.RemoveAll(item => item.IsIdle() == true);
-                if(onMoveList.Count == 0)
-                {
-                    currentGameState = GameStatus.Idle;
-                }
-                break;
-            case GameStatus.Moving:
-                onMoveList.RemoveAll(item => item.IsIdle() == true);
-                if (onMoveList.Count == 0)
-                {
-                    currentGameState = GameStatus.MatchCheck;
-                }
-                break;
-            case GameStatus.MatchCheck:
-                if(MakeThreeMatchList() == true)
-                {
-                    for (int i = 0; i < currentStage.BoardYSize; i++)
+            switch (currentGameState)
+            {
+                case GameStatus.FlipMoving:
+                    onMoveList.RemoveAll(item => item.IsIdle() == true);
+                    if (onMoveList.Count == 0)
                     {
-                        for (int j = 0; j < currentStage.BoardXSize; j++)
-                        {
-                            if(isMatched[i, j] == true)
-                            {
-                                Node temp = NodeBoard[i, j];
-                                temp.SetDisappear();
-                                NodeBoard[i, j] = null;
-                                currentStage.GainScore(1);
-                                setAffection(i, j);
-                            }
-                        }
+                        currentGameState = GameStatus.Idle;
                     }
-                    for (int i = 0; i < currentStage.BoardYSize; i++)
-                    {
-                        for (int j = 0; j < currentStage.BoardXSize; j++)
-                        {
-                            if (isAffected[i, j] == true && NodeBoard[i, j] != null)
-                            {
-                                NodeBoard[i, j].OnAffected();
-                            }
-                        }
-                    }
+                    break;
 
-                    AudioManager.instance.PlayBreakSound();
-                    GameSceneUI.instance.UpdateUI(currentStage);
-                    currentGameState = GameStatus.FallCheck;
-                }
-                else
-                {
-                    if (currentStage.IsGameOver())
+                case GameStatus.Moving:
+                    onMoveList.RemoveAll(item => item.IsIdle() == true);
+                    if (onMoveList.Count == 0)
                     {
-                        for (int i = 0; i < currentStage.BoardYSize; i++)
-                        {
-                            for (int j = 0; j < currentStage.BoardXSize; j++)
-                            {
-                                Node temp = NodeBoard[i, j];
-                                if(temp != null)
-                                    temp.SetDisappear();
-                                NodeBoard[i, j] = null;
-                            }
-                        }
-                        GameSceneUI.instance.GameOverScreen();
-                        currentGameState = GameStatus.GameEnded;
+                        currentGameState = GameStatus.MatchCheck;
                     }
-                    else if (currentStage.IsGameCleared())
+                    break;
+
+                case GameStatus.MatchCheck:
+                    if (MakeThreeMatchList() == true)
                     {
                         for (int i = 0; i < currentStage.BoardYSize; i++)
                         {
                             for (int j = 0; j < currentStage.BoardXSize; j++)
                             {
-                                Node temp = NodeBoard[i, j];
-                                if (temp != null)
+                                if (isMatched[i, j] == true)
+                                {
+                                    Node temp = NodeBoard[i, j];
                                     temp.SetDisappear();
-                                NodeBoard[i, j] = null;
+                                    NodeBoard[i, j] = null;
+                                    currentStage.GainScore(1);
+                                    setAffection(i, j);
+                                }
                             }
                         }
-                        GameSceneUI.instance.GameClearScreen(currentStage);
-                        currentGameState = GameStatus.GameEnded;
+                        for (int i = 0; i < currentStage.BoardYSize; i++)
+                        {
+                            for (int j = 0; j < currentStage.BoardXSize; j++)
+                            {
+                                if (isAffected[i, j] == true && NodeBoard[i, j] != null)
+                                {
+                                    NodeBoard[i, j].OnAffected();
+                                }
+                            }
+                        }
+
+                        AudioManager.instance.PlayBreakSound();
+                        GameSceneUI.instance.UpdateUI(currentStage);
+                        currentGameState = GameStatus.FallCheck;
                     }
                     else
-                        currentGameState = GameStatus.Idle;
-                }
-                break;
-            case GameStatus.FallCheck:
-                MakeFallMoveMent();
-                if (onMoveList.Count == 0)
-                {
-                    isWaiting = true;
-                    StartCoroutine(WaitBeforenextAction());
-                    currentGameState = GameStatus.MatchCheck;
-                }
-                else
-                    currentGameState = GameStatus.Falling;
-                break;
-            case GameStatus.Falling:
-                onMoveList.RemoveAll(item => item.IsIdle() == true);
-                if (onMoveList.Count == 0)
-                {
-                    currentGameState = GameStatus.FallCheck;
-                }
-                break;
-            default:
-                break;
+                    {
+                        if (currentStage.IsGameOver())
+                        {
+                            for (int i = 0; i < currentStage.BoardYSize; i++)
+                            {
+                                for (int j = 0; j < currentStage.BoardXSize; j++)
+                                {
+                                    Node temp = NodeBoard[i, j];
+                                    if (temp != null)
+                                        temp.SetDisappear();
+                                    NodeBoard[i, j] = null;
+                                }
+                            }
+                            GameSceneUI.instance.GameOverScreen();
+                            currentGameState = GameStatus.GameEnded;
+                        }
+                        else if (currentStage.IsGameCleared())
+                        {
+                            for (int i = 0; i < currentStage.BoardYSize; i++)
+                            {
+                                for (int j = 0; j < currentStage.BoardXSize; j++)
+                                {
+                                    Node temp = NodeBoard[i, j];
+                                    if (temp != null)
+                                        temp.SetDisappear();
+                                    NodeBoard[i, j] = null;
+                                }
+                            }
+                            GameSceneUI.instance.GameClearScreen(currentStage);
+                            currentGameState = GameStatus.GameEnded;
+                        }
+                        else
+                            currentGameState = GameStatus.Idle;
+                    }
+                    break;
 
+                case GameStatus.FallCheck:
+                    MakeFallMoveMent();
+                    if (onMoveList.Count == 0)
+                    {
+                        currentGameState = GameStatus.MatchCheck;
+                    }
+                    else
+                        currentGameState = GameStatus.Falling;
+                    break;
+
+                case GameStatus.Falling:
+                    onMoveList.RemoveAll(item => item.IsIdle() == true);
+                    if (onMoveList.Count == 0)
+                    {
+                        currentGameState = GameStatus.FallCheck;
+                    }
+                    break;
+                default:
+                    break;
+
+            }
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
@@ -274,12 +277,6 @@ public class GameBoard : MonoBehaviour
 
         }
         
-    }
-
-    IEnumerator WaitBeforenextAction()
-    {
-        yield return new WaitForSeconds(0.3f);
-        isWaiting = false;
     }
 
     bool MoveThreeMatchCheck(int xPos1, int yPos1, int xPos2, int yPos2)
