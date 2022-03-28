@@ -6,12 +6,12 @@ public enum StageType
 {
     StageTypeNone,
     StageTypeInfinte,
-    StageTypeTarget
+    StageTypeTargetScore,
+    StageTypeTargetNode
 }
 
 public class StageInfo
 {
-    
     //Stage Information
     public float BaseXPos;
     public float BaseYPos;
@@ -23,9 +23,30 @@ public class StageInfo
     public int Score;
     public StageType CurrentStageType;
 
+    public int targetScore;
+
     public StageInfo()
     {
         CurrentStageType = StageType.StageTypeNone;
     }
 
+    public bool IsGameOver()
+    {
+        if (MoveLeft <= 0)
+            return true;
+        return false;
+    }
+    public bool IsGameCleared()
+    {
+        if(CurrentStageType == StageType.StageTypeTargetScore)
+        {
+            if (Score >= targetScore)
+                return true;
+        }
+        return false;
+    }
+    public void GainScore(int gainedScore)
+    {
+        Score += gainedScore;
+    }
 }

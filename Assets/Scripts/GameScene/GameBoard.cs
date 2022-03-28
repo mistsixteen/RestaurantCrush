@@ -38,7 +38,6 @@ public class GameBoard : MonoBehaviour
     bool[,] isAffected;
 
     GameStatus currentGameState;
-    GameSceneUI gameUI;
 
     int touchedXpos, touchedYpos;
 
@@ -55,8 +54,6 @@ public class GameBoard : MonoBehaviour
         onMoveList = new List<Node>();
         InitializeBoard();
     }
-
-
 
     // Update is called once per frame
     void FixedUpdate()
@@ -91,7 +88,7 @@ public class GameBoard : MonoBehaviour
                                 Node temp = NodeBoard[i, j];
                                 temp.SetDisappear();
                                 NodeBoard[i, j] = null;
-                                currentStage.Score++;
+                                currentStage.GainScore(1);
                                 setAffection(i, j);
                             }
                         }
@@ -113,7 +110,7 @@ public class GameBoard : MonoBehaviour
                 }
                 else
                 {
-                    if (currentStage.MoveLeft <= 0)
+                    if (currentStage.IsGameOver())
                     {
                         for (int i = 0; i < currentStage.BoardYSize; i++)
                         {
@@ -126,6 +123,21 @@ public class GameBoard : MonoBehaviour
                             }
                         }
                         GameSceneUI.instance.GameOverScreen();
+                        currentGameState = GameStatus.GameEnded;
+                    }
+                    else if (currentStage.IsGameCleared())
+                    {
+                        for (int i = 0; i < currentStage.BoardYSize; i++)
+                        {
+                            for (int j = 0; j < currentStage.BoardXSize; j++)
+                            {
+                                Node temp = NodeBoard[i, j];
+                                if (temp != null)
+                                    temp.SetDisappear();
+                                NodeBoard[i, j] = null;
+                            }
+                        }
+                        GameSceneUI.instance.GameClearScreen(currentStage);
                         currentGameState = GameStatus.GameEnded;
                     }
                     else
@@ -509,6 +521,7 @@ public class GameBoard : MonoBehaviour
             }
         }
         currentGameState = GameStatus.Idle;
+        GameSceneUI.instance.SetObjectUI(currentStage);
         GameSceneUI.instance.UpdateUI(currentStage);
     }
 
