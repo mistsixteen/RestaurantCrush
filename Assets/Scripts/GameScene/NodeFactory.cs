@@ -36,27 +36,41 @@ public class NodeFactory
 
     public Node CreateNode(NodeList type)
     {
-        GameObject temp;
+        GameObject tempGameObject;
+        Node NodeComponent;
         switch (type)
         {
             case NodeList.RedNode:
-                temp = GameObject.Instantiate(RedNode);
+                tempGameObject = GameObject.Instantiate(RedNode);
+                NodeComponent = tempGameObject.GetComponent<Node>();
+                NodeComponent.NodeType = NodeType.Red;
                 break;
             case NodeList.GreenNode:
-                temp = GameObject.Instantiate(GreenNode);
+                tempGameObject = GameObject.Instantiate(GreenNode);
+                NodeComponent = tempGameObject.GetComponent<Node>();
+                NodeComponent.NodeType = NodeType.Green;
                 break;
             case NodeList.BlueNode:
-                temp = GameObject.Instantiate(BlueNode);
+                tempGameObject = GameObject.Instantiate(BlueNode);
+                NodeComponent = tempGameObject.GetComponent<Node>();
+                NodeComponent.NodeType = NodeType.Blue;
                 break;
             case NodeList.YellowNode:
-                temp = GameObject.Instantiate(YellowNode);
+                tempGameObject = GameObject.Instantiate(YellowNode);
+                NodeComponent = tempGameObject.GetComponent<Node>();
+                NodeComponent.NodeType = NodeType.Yellow;
                 break;
             case NodeList.XNode:
-                temp = GameObject.Instantiate(XNode);
+                tempGameObject = GameObject.Instantiate(XNode);
+                NodeComponent = tempGameObject.GetComponent<Node>();
+                NodeComponent.NodeType = NodeType.None;
+                NodeComponent.CanMove = false;
                 break;
             default:
                 //Todo : Make ErrorNode Prefab
-                temp = GameObject.Instantiate(XNode);
+                tempGameObject = GameObject.Instantiate(XNode);
+                NodeComponent = tempGameObject.GetComponent<Node>();
+                NodeComponent.NodeType = NodeType.None;
                 break;
         }
         return temp.GetComponent<Node>();

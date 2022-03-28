@@ -392,19 +392,15 @@ public class GameBoard : MonoBehaviour
                 {
                     case 1:
                         NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.RedNode);
-                        NodeBoard[0, j].NodeType = NodeType.Red;
                         break;
                     case 2:
                         NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.BlueNode);
-                        NodeBoard[0, j].NodeType = NodeType.Blue;
                         break;
                     case 3:
                         NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.GreenNode);
-                        NodeBoard[0, j].NodeType = NodeType.Green;
                         break;
                     case 4:
                         NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.YellowNode);
-                        NodeBoard[0, j].NodeType = NodeType.Yellow;
                         break;
                     default:
                         Debug.LogError("Unidentified Node!!!");
@@ -479,24 +475,18 @@ public class GameBoard : MonoBehaviour
                      */
                     case 1:
                         NodeBoard[i, j] = NodeFactory.GetInstance().CreateNode(NodeList.RedNode);
-                        NodeBoard[i, j].NodeType = NodeType.Red;
                         break;
                     case 2:
                         NodeBoard[i, j] = NodeFactory.GetInstance().CreateNode(NodeList.BlueNode);
-                        NodeBoard[i, j].NodeType = NodeType.Blue;
                         break;
                     case 3:
                         NodeBoard[i, j] = NodeFactory.GetInstance().CreateNode(NodeList.GreenNode);
-                        NodeBoard[i, j].NodeType = NodeType.Green;
                         break;
                     case 4:
                         NodeBoard[i, j] = NodeFactory.GetInstance().CreateNode(NodeList.YellowNode);
-                        NodeBoard[i, j].NodeType = NodeType.Yellow;
                         break;
                     case 5:
                         NodeBoard[i, j] = NodeFactory.GetInstance().CreateNode(NodeList.XNode);
-                        NodeBoard[i, j].NodeType = NodeType.None;
-                        NodeBoard[i, j].CanMove = false;
                         break;
                     default:
                         Debug.LogError("Unidentified Node!!!");
