@@ -61,6 +61,9 @@ public class GameBoard : MonoBehaviour
         {
             switch (currentGameState)
             {
+                case GameStatus.Idle:
+                    break;
+
                 case GameStatus.FlipMoving:
                     onMoveList.RemoveAll(item => item.IsIdle() == true);
                     if (onMoveList.Count == 0)

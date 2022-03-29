@@ -42,7 +42,6 @@ public class Node : MonoBehaviour
     private int MoveFrameLeft;
 
     private NodeType nodeType;
-
     public NodeType NodeType
     {
         get
@@ -59,7 +58,6 @@ public class Node : MonoBehaviour
     }
 
     private bool canMove;
-
     public bool CanMove
     {
         get
@@ -85,6 +83,7 @@ public class Node : MonoBehaviour
         MoveFrameLeft = 0;
         moveQueue = new Queue<Vector3>();
         currentState = NodeStatus.Idle;
+        nodeType = NodeType.None;
     }
 
     public void OnIced()
