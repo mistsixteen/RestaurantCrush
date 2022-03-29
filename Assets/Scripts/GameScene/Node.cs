@@ -19,6 +19,14 @@ public enum NodeType
     Yellow
 }
 
+public enum ItemType
+{
+    None,
+    Bomb,
+    Horizontal,
+    Vertical
+}
+
 
 public class Node : MonoBehaviour
 {
@@ -33,6 +41,8 @@ public class Node : MonoBehaviour
     private Vector3 mousePoint;
     private bool isClicked;
     private bool isIced;
+    public bool isActivated;
+
     private NodeStatus currentState;
 
     private Queue<Vector3> moveQueue;
@@ -40,6 +50,8 @@ public class Node : MonoBehaviour
     private Vector3 MoveTarget;
     private Vector3 MoveVector;
     private int MoveFrameLeft;
+
+    public ItemType itemType;
 
     private NodeType nodeType;
     public NodeType NodeType
@@ -84,6 +96,7 @@ public class Node : MonoBehaviour
         moveQueue = new Queue<Vector3>();
         currentState = NodeStatus.Idle;
         nodeType = NodeType.None;
+        isActivated = false;
     }
 
     public void OnIced()
@@ -188,6 +201,15 @@ public class Node : MonoBehaviour
         yPos = inputYPos;
     }
 
+    public int GetXpos()
+    {
+        return xPos;
+    }
+    public int GetYpos()
+    {
+        return yPos;
+    }
+
     public bool IsIdle()
     {
         if (currentState == NodeStatus.Idle)
@@ -236,5 +258,14 @@ public class Node : MonoBehaviour
             myTransform = this.gameObject.GetComponent<Transform>(); 
         }
         return myTransform;
+    }
+
+    public bool ActiveOnMove()
+    {
+        if (itemType != ItemType.None)
+        {
+            return true;
+        }
+        return false;
     }
 }

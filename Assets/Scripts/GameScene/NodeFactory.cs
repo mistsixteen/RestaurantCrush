@@ -13,6 +13,7 @@ public enum NodeList
 public class NodeFactory
 {
     private GameObject RedNode, GreenNode, BlueNode, YellowNode, XNode;
+    private GameObject BombItem;
 
     private static NodeFactory instance;
 
@@ -32,6 +33,31 @@ public class NodeFactory
         BlueNode = Resources.Load<GameObject>("Prefab/BlueNode");
         YellowNode = Resources.Load<GameObject>("Prefab/YellowNode");
         XNode = Resources.Load<GameObject>("Prefab/XNode");
+
+        BombItem = Resources.Load<GameObject>("Prefab/Bomb");
+    }
+
+    public Node CreateItemBlock(NodeList nodeType, ItemType itemType)
+    {
+        GameObject tempGameObject;
+        Node NodeComponent = null;
+
+        switch (itemType)
+        {
+            case ItemType.Bomb:
+                tempGameObject = GameObject.Instantiate(BombItem);
+                NodeComponent = tempGameObject.GetComponent<Node>();
+                NodeComponent.NodeType = NodeType.None;
+                NodeComponent.itemType = ItemType.Bomb;
+                break;
+            case ItemType.Horizontal:
+                break;
+            case ItemType.Vertical:
+                break;
+        }
+
+
+        return NodeComponent;
     }
 
     public Node CreateNode(NodeList type)
@@ -73,6 +99,6 @@ public class NodeFactory
                 NodeComponent.NodeType = NodeType.None;
                 break;
         }
-        return temp.GetComponent<Node>();
+        return NodeComponent;
     }
 }

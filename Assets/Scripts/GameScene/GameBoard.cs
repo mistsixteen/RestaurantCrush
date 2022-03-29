@@ -28,8 +28,12 @@ public class GameBoard : MonoBehaviour
 
     private StageInfo currentStage;
     private List<Node> onMoveList;
+    private List<Node> itemGenerated;
+    private Queue<Node> itemActivated;
 
     Node[,] NodeBoard;
+    NodeType[,] MatchBoard;
+
     bool[,] isMatched;
     bool[,] isAffected;
 
@@ -284,90 +288,195 @@ public class GameBoard : MonoBehaviour
 
     bool MoveThreeMatchCheck(int xPos1, int yPos1, int xPos2, int yPos2)
     {
-        NodeType[,] currentBoard = new NodeType[currentStage.BoardYSize, currentStage.BoardXSize];
+        if (NodeBoard[yPos1, xPos1].ActiveOnMove() || NodeBoard[yPos2, xPos2].ActiveOnMove())
+        {
+            if (NodeBoard[yPos1, xPos1].itemType != ItemType.None)
+            {
+                NodeBoard[yPos1, xPos1].isActivated = true;
+                itemActivated.Enqueue(NodeBoard[yPos1, xPos1]);
+            }
+            if (NodeBoard[yPos2, xPos2].itemType != ItemType.None)
+            {
+                NodeBoard[yPos2, xPos2].isActivated = true;
+                itemActivated.Enqueue(NodeBoard[yPos2, xPos2]);
+            }
+
+            return true;
+        }
+        NodeType[,] MatchBoard = new NodeType[currentStage.BoardYSize, currentStage.BoardXSize];
         for(int i = 0; i < currentStage.BoardYSize; i++)
         {
             for(int j = 0; j < currentStage.BoardXSize; j++)
             {
                 if (NodeBoard[i, j] != null)
-                    currentBoard[i, j] = NodeBoard[i, j].NodeType;
+                    MatchBoard[i, j] = NodeBoard[i, j].NodeType;
                 else
-                    currentBoard[i, j] = NodeType.None;
+                    MatchBoard[i, j] = NodeType.None;
             }
         }
-        NodeType temp = currentBoard[yPos1, xPos1];
-        currentBoard[yPos1, xPos1] = currentBoard[yPos2, xPos2];
-        currentBoard[yPos2, xPos2] = temp;
+        NodeType temp = MatchBoard[yPos1, xPos1];
+        MatchBoard[yPos1, xPos1] = MatchBoard[yPos2, xPos2];
+        MatchBoard[yPos2, xPos2] = temp;
 
         for (int i = 0; i < currentStage.BoardYSize; i++)
         {
             for (int j = 0; j < currentStage.BoardXSize; j++)
             {
-                if (i < currentStage.BoardYSize - 2 && currentBoard[i, j] != NodeType.None &&
-                    currentBoard[i, j] == currentBoard[i + 1, j] &&
-                    currentBoard[i + 1, j] == currentBoard[i + 2, j])
+                if (i < currentStage.BoardYSize - 2 && MatchBoard[i, j] != NodeType.None &&
+                    MatchBoard[i, j] == MatchBoard[i + 1, j] &&
+                    MatchBoard[i + 1, j] == MatchBoard[i + 2, j])
                     return true;
-                if (j < currentStage.BoardXSize - 2 && currentBoard[i, j] != NodeType.None &&
-                    currentBoard[i, j] == currentBoard[i, j + 1] &&
-                    currentBoard[i, j + 1] == currentBoard[i, j + 2])
+                if (j < currentStage.BoardXSize - 2 && MatchBoard[i, j] != NodeType.None &&
+                    MatchBoard[i, j] == MatchBoard[i, j + 1] &&
+                    MatchBoard[i, j + 1] == MatchBoard[i, j + 2])
                     return true;
             }
         }
-
         return false;
     }
-    bool MakeThreeMatchList()
+
+    void initializeMatchBoard()
     {
-        NodeType[,] currentBoard = new NodeType[currentStage.BoardYSize, currentStage.BoardXSize];
-
-        bool isMatchMade = false;
-
+        //Initialize Match Board
         for (int i = 0; i < currentStage.BoardYSize; i++)
         {
             for (int j = 0; j < currentStage.BoardXSize; j++)
             {
                 if (NodeBoard[i, j] != null)
                 {
-                    currentBoard[i, j] = NodeBoard[i, j].NodeType;
+                    MatchBoard[i, j] = NodeBoard[i, j].NodeType;
                 }
                 else
-                    currentBoard[i, j] = NodeType.None;
+                    MatchBoard[i, j] = NodeType.None;
                 isMatched[i, j] = false;
                 isAffected[i, j] = false;
             }
         }
 
+    }
+
+
+    bool MakeThreeMatchList()
+    {
+        bool isMatchMade = false;
+
+        initializeMatchBoard();
+
+        if(itemActivated.Count > 0)
+        {
+            isMatchMade = true;
+        }
+
+        //1. 가로 체크
+
         for (int i = 0; i < currentStage.BoardYSize; i++)
         {
-            for (int j = 0; j < currentStage.BoardXSize; j++)
+            for (int j = 0; j < currentStage.BoardXSize;)
             {
-                if (currentBoard[i, j] == NodeType.None)
+                if (MatchBoard[i, j] == NodeType.None)
+                {
+                    j += 1;
                     continue;
+                }
 
-                if (i < currentStage.BoardYSize - 2 &&
-                    currentBoard[i, j] == currentBoard[i + 1, j] &&
-                    currentBoard[i + 1, j] == currentBoard[i + 2, j])
+                NodeType temp = MatchBoard[i, j];
+                int matchSize = 1;
+                int startingPos = j;
+
+                while(true)
                 {
-                    isMatched[i, j] = true;
-                    isMatched[i + 1, j] = true;
-                    isMatched[i + 2, j] = true;
-                    isMatchMade = true;
-                }
-                if (j < currentStage.BoardXSize - 2 &&
-                    currentBoard[i, j] == currentBoard[i, j + 1] &&
-                    currentBoard[i, j + 1] == currentBoard[i, j + 2])
-                {
-                    isMatched[i, j] = true;
-                    isMatched[i, j + 1] = true;
-                    isMatched[i, j + 2] = true;
-                    isMatchMade = true;
-                }
+                    j += 1;
+                    if (j >= currentStage.BoardXSize)
+                    {
+                        break;
+                    }
                     
+                    if (temp == MatchBoard[i, j])
+                    {
+                        matchSize+= 1;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                if(matchSize >= 3)
+                {
+                    isMatchMade = true;
+                    for(int idx = 0; idx < matchSize; idx++)
+                    {
+                        isMatched[i, startingPos + idx] = true;
+                        if (NodeBoard[i, startingPos + idx].itemType != ItemType.None)
+                        {
+                            NodeBoard[i, startingPos + idx].isActivated = true;
+                            itemActivated.Enqueue(NodeBoard[i, startingPos + idx]);
+                        }
+                    }
+                    //match
+                    if(matchSize >= 4)
+                    {
+                        //TODO : Generate Item(가로)
+                    }
+                }
+
             }
         }
 
+        //2. 세로 체크
+        for (int i = 0; i < currentStage.BoardXSize; i++)
+        {
+            for (int j = 0; j < currentStage.BoardYSize;)
+            {
+                if (MatchBoard[j, i] == NodeType.None)
+                {
+                    j += 1;
+                    continue;
+                }
+                NodeType temp = MatchBoard[j, i];
+                int matchSize = 1;
+                int startingPos = j;
+
+                while (true)
+                {
+                    j += 1;
+                    if (j >= currentStage.BoardYSize)
+                    {
+                        break;
+                    }
+
+                    if (temp == MatchBoard[j, i])
+                    {
+                        matchSize += 1;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                if (matchSize >= 3)
+                {
+                    isMatchMade = true;
+                    for (int idx = 0; idx < matchSize; idx++)
+                    {
+                        isMatched[startingPos + idx, i] = true;
+                        if (NodeBoard[startingPos + idx, i].itemType != ItemType.None)
+                        {
+                            NodeBoard[startingPos + idx, i].isActivated = true;
+                            itemActivated.Enqueue(NodeBoard[i, startingPos + idx]);
+                        }
+                    }
+                    //match
+                    if (matchSize >= 4)
+                    {
+                        //TODO : Generate Item(세로)
+                    }
+                }
+
+            }
+        }
         return isMatchMade;
     }
+
     void MakeFallMoveMent()
     {
         for (int i = currentStage.BoardYSize - 1; i > 0; i--)
@@ -450,6 +559,8 @@ public class GameBoard : MonoBehaviour
         NodeBoard = new Node[currentStage.BoardYSize, currentStage.BoardXSize];
         isMatched = new bool[currentStage.BoardYSize, currentStage.BoardXSize];
         isAffected = new bool[currentStage.BoardYSize, currentStage.BoardXSize];
+        MatchBoard =  new NodeType[currentStage.BoardYSize, currentStage.BoardXSize];
+        itemActivated = new Queue<Node>();
 
         for (int i = 0; i < currentStage.BoardYSize; i++)
         {
