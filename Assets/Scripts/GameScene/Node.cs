@@ -96,6 +96,7 @@ public class Node : MonoBehaviour
         moveQueue = new Queue<Vector3>();
         currentState = NodeStatus.Idle;
         nodeType = NodeType.None;
+        itemType = ItemType.None;
         isActivated = false;
     }
 
@@ -107,7 +108,7 @@ public class Node : MonoBehaviour
 
     public void OnAffected()
     {
-        if(isIced == true)
+        if(itemType == ItemType.None && isIced == true)
         {
             this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Circle");
             isIced = false;

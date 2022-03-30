@@ -87,6 +87,49 @@ public class GameBoard : MonoBehaviour
                 case GameStatus.MatchCheck:
                     if (MakeThreeMatchList() == true)
                     {
+                        //activateItem
+                        while(itemActivated.Count != 0)
+                        {
+                            Debug.Log("Activate!!!");
+                            Node tempNode = itemActivated.Dequeue();
+                            int Line = 0;
+                            //TODO : Activate Item -> Chain Item
+                            switch (tempNode.itemType)
+                            {
+                                case ItemType.Bomb:
+                                    //Todo : 추후구현
+                                    break;
+
+                                case ItemType.Horizontal:
+                                    Line = tempNode.GetYpos();
+                                    for (int i = 0; i < currentStage.BoardXSize; i++)
+                                    {
+                                        isMatched[Line, i] = true;
+                                        if (NodeBoard[Line, i].itemType != ItemType.None && NodeBoard[Line, i].isActivated == false)
+                                        {
+                                            NodeBoard[Line, i].isActivated = true;
+                                            itemActivated.Enqueue(NodeBoard[Line, i]);
+                                        }
+                                    }
+                                    break;
+
+                                case ItemType.Vertical:
+                                    Line = tempNode.GetXpos();
+                                    for (int i = 0; i < currentStage.BoardYSize; i++)
+                                    {
+                                        isMatched[i, Line] = true;
+                                        if (NodeBoard[i, Line].itemType != ItemType.None && NodeBoard[i, Line].isActivated == false)
+                                        {
+                                            NodeBoard[i, Line].isActivated = true;
+                                            itemActivated.Enqueue(NodeBoard[i, Line]);
+                                        }
+                                    }
+
+                                    break;
+                            }
+                        }
+
+                        //delete
                         for (int i = 0; i < currentStage.BoardYSize; i++)
                         {
                             for (int j = 0; j < currentStage.BoardXSize; j++)
@@ -101,6 +144,7 @@ public class GameBoard : MonoBehaviour
                                 }
                             }
                         }
+                        //affect
                         for (int i = 0; i < currentStage.BoardYSize; i++)
                         {
                             for (int j = 0; j < currentStage.BoardXSize; j++)
@@ -110,6 +154,25 @@ public class GameBoard : MonoBehaviour
                                     NodeBoard[i, j].OnAffected();
                                 }
                             }
+                        }
+                        //generateItem
+                        foreach(Node newItem in itemGenerated)
+                        {
+                            if (newItem == null)
+                            {
+                                Debug.Log("NULL error!!!");
+                                continue;
+                            }
+                            int xPos = newItem.GetXpos();
+                            int yPos = newItem.GetYpos();
+                            Debug.Log("Item = " + yPos + xPos);
+                            if (NodeBoard[yPos, xPos] == null)
+                            {
+                                NodeBoard[yPos, xPos] = newItem;
+                                NodeBoard[yPos, xPos].gameObject.SetActive(true);
+                            }
+                            else
+                                Destroy(newItem.gameObject);
                         }
 
                         AudioManager.instance.PlayBreakSound();
@@ -335,7 +398,7 @@ public class GameBoard : MonoBehaviour
         return false;
     }
 
-    void initializeMatchBoard()
+    void InitializeMatchBoard()
     {
         //Initialize Match Board
         for (int i = 0; i < currentStage.BoardYSize; i++)
@@ -353,6 +416,8 @@ public class GameBoard : MonoBehaviour
             }
         }
 
+        itemGenerated.Clear();
+
     }
 
 
@@ -360,7 +425,7 @@ public class GameBoard : MonoBehaviour
     {
         bool isMatchMade = false;
 
-        initializeMatchBoard();
+        InitializeMatchBoard();
 
         if(itemActivated.Count > 0)
         {
@@ -406,7 +471,7 @@ public class GameBoard : MonoBehaviour
                     for(int idx = 0; idx < matchSize; idx++)
                     {
                         isMatched[i, startingPos + idx] = true;
-                        if (NodeBoard[i, startingPos + idx].itemType != ItemType.None)
+                        if (NodeBoard[i, startingPos + idx].itemType != ItemType.None && NodeBoard[i, startingPos + idx].isActivated == false)
                         {
                             NodeBoard[i, startingPos + idx].isActivated = true;
                             itemActivated.Enqueue(NodeBoard[i, startingPos + idx]);
@@ -415,7 +480,12 @@ public class GameBoard : MonoBehaviour
                     //match
                     if(matchSize >= 4)
                     {
-                        //TODO : Generate Item(가로)
+                        Debug.Log("GenerateItem - Hor");
+                        Node newItemNode = NodeFactory.GetInstance().CreateItemBlock(temp, ItemType.Horizontal);
+                        newItemNode.SetPosition(startingPos, i);
+                        newItemNode.GetTransform().position = GetNodePosition(startingPos, i);
+                        newItemNode.gameObject.SetActive(false);
+                        itemGenerated.Add(newItemNode);
                     }
                 }
 
@@ -459,7 +529,7 @@ public class GameBoard : MonoBehaviour
                     for (int idx = 0; idx < matchSize; idx++)
                     {
                         isMatched[startingPos + idx, i] = true;
-                        if (NodeBoard[startingPos + idx, i].itemType != ItemType.None)
+                        if (NodeBoard[startingPos + idx, i].itemType != ItemType.None && NodeBoard[startingPos + idx, i].isActivated == false)
                         {
                             NodeBoard[startingPos + idx, i].isActivated = true;
                             itemActivated.Enqueue(NodeBoard[i, startingPos + idx]);
@@ -468,7 +538,12 @@ public class GameBoard : MonoBehaviour
                     //match
                     if (matchSize >= 4)
                     {
-                        //TODO : Generate Item(세로)
+                        Debug.Log("GenerateItem - Ver");
+                        Node newItemNode = NodeFactory.GetInstance().CreateItemBlock(temp, ItemType.Vertical);
+                        newItemNode.SetPosition(i, startingPos);
+                        newItemNode.GetTransform().position = GetNodePosition(i, startingPos);
+                        newItemNode.gameObject.SetActive(false);
+                        itemGenerated.Add(newItemNode);
                     }
                 }
 
@@ -561,6 +636,7 @@ public class GameBoard : MonoBehaviour
         isAffected = new bool[currentStage.BoardYSize, currentStage.BoardXSize];
         MatchBoard =  new NodeType[currentStage.BoardYSize, currentStage.BoardXSize];
         itemActivated = new Queue<Node>();
+        itemGenerated = new List<Node>();
 
         for (int i = 0; i < currentStage.BoardYSize; i++)
         {

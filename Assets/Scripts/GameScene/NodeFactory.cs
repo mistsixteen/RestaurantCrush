@@ -37,10 +37,30 @@ public class NodeFactory
         BombItem = Resources.Load<GameObject>("Prefab/Bomb");
     }
 
-    public Node CreateItemBlock(NodeList nodeType, ItemType itemType)
+    public Node CreateItemBlock(NodeType nodeType, ItemType itemType)
     {
         GameObject tempGameObject;
         Node NodeComponent = null;
+        NodeList tempNodeList;
+        switch(nodeType)
+        {
+            case NodeType.Red:
+                tempNodeList = NodeList.RedNode;
+                break;
+            case NodeType.Green:
+                tempNodeList = NodeList.GreenNode;
+                break;
+            case NodeType.Yellow:
+                tempNodeList = NodeList.YellowNode;
+                break;
+            case NodeType.Blue:
+                tempNodeList = NodeList.BlueNode;
+                break;
+            default:
+                tempNodeList = NodeList.XNode;
+                break;
+
+        }
 
         switch (itemType)
         {
@@ -51,12 +71,16 @@ public class NodeFactory
                 NodeComponent.itemType = ItemType.Bomb;
                 break;
             case ItemType.Horizontal:
+                NodeComponent = CreateNode(tempNodeList);
+                NodeComponent.itemType = ItemType.Horizontal;
+                NodeComponent.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Horizon");
                 break;
             case ItemType.Vertical:
+                NodeComponent = CreateNode(tempNodeList);
+                NodeComponent.itemType = ItemType.Vertical;
+                NodeComponent.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Vertical");
                 break;
         }
-
-
         return NodeComponent;
     }
 
