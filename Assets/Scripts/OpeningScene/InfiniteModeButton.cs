@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class InfiniteModeButton : MonoBehaviour
@@ -33,10 +34,12 @@ public class InfiniteModeButton : MonoBehaviour
 
         while (!loadOperation.isDone)
         {
-            Debug.Log(loadOperation.progress);
-
+            string loadingText = "Loading... ";
+            loadingText = loadingText + (int)(loadOperation.progress * 100) + "%";
+            GameObject.Find("LoadingPercent").GetComponent<Text>().text = loadingText;
             yield return null;
         }
+
     }
 
 }
