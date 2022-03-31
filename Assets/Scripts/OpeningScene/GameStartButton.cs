@@ -21,8 +21,21 @@ public class GameStartButton : MonoBehaviour
         Debug.Log("GameStartButton");
         StageLoadManager.GetInstance().LoadStage_Infinite();
         if (StageLoadManager.GetInstance().isStageLoaded() == true)
-            SceneManager.LoadScene("GameScene");
+            StartCoroutine(StartScene());
         else
             Debug.LogError("Stage Load Failed!!!!");
+    }
+
+    IEnumerator StartScene()
+    {
+        yield return null;
+        AsyncOperation loadOperation = SceneManager.LoadSceneAsync("GameScene");
+
+        while(!loadOperation.isDone)
+        {
+            Debug.Log(loadOperation.progress);
+
+            yield return null;
+        }
     }
 }
