@@ -97,6 +97,28 @@ public class GameBoard : MonoBehaviour
                             switch (tempNode.itemType)
                             {
                                 case ItemType.Bomb:
+                                    int xPos = tempNode.GetXpos();
+                                    int yPos = tempNode.GetYpos();
+
+                                    for(int i = -1; i <= 1; i++)
+                                    {
+                                        for(int j = -1; j <= 1; j++)
+                                        {
+                                            if (i == 0 && j == 0)
+                                                continue;
+                                            if (isInGrid(yPos + i, xPos + j))
+                                            {
+                                                isMatched[yPos + i, xPos + j] = true;
+                                                if (NodeBoard[yPos + i, xPos + j].itemType != ItemType.None && NodeBoard[yPos + i, xPos + j].isActivated == false)
+                                                {
+                                                    NodeBoard[yPos + i, xPos + j].isActivated = true;
+                                                    itemActivated.Enqueue(NodeBoard[yPos + i, xPos + j]);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    
                                     //Todo : 추후구현
                                     break;
 
@@ -721,4 +743,13 @@ public class GameBoard : MonoBehaviour
             isAffected[yPos, xPos + 1] = true;
         }
     }
+    bool isInGrid(int yPos, int xPos)
+    {
+        if (yPos < 0 || yPos >= currentStage.BoardYSize)
+            return false;
+        if (xPos < 0 || xPos >= currentStage.BoardXSize)
+            return false;
+        return true;
+    }
+
 }
