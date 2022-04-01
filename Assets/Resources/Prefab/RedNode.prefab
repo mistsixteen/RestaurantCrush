@@ -97,7 +97,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveLength: 0.5
-  moveFrame: 10
+  moveFrame: 5
+  isActivated: 0
+  itemType: 0
 --- !u!61 &1733406205276833708
 BoxCollider2D:
   m_ObjectHideFlags: 0

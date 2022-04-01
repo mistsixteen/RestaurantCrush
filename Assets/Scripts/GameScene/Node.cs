@@ -34,7 +34,7 @@ public class Node : MonoBehaviour
     private Transform myTransform;
 
     public float moveLength = 0.5f;
-    public int moveFrame = 10;
+    public int moveFrame = 5;
 
     private int xPos, yPos;
 

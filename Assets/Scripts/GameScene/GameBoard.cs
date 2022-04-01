@@ -664,20 +664,13 @@ public class GameBoard : MonoBehaviour
         {
             for (int j = 0; j < currentStage.BoardXSize; j++)
             {
-                if (i == currentStage.BoardYSize - 3)
-                {
-                    //임시 : xNode 테스트용
-                    random = 5;
-                }
-                else
-                { 
-                    while (true)
-                    {
-                        random = Random.Range(1, 5);
-                        if (IsInstallAble(j, i, (NodeType)(random)) == true)
-                            break;
-                    }
-                }
+
+                 while (true)
+                 {
+                     random = Random.Range(1, 5);
+                     if (IsInstallAble(j, i, (NodeType)(random)) == true)
+                         break;
+                 }
                 
                 switch (random)
                 {
