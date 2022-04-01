@@ -574,58 +574,85 @@ public class GameBoard : MonoBehaviour
         return isMatchMade;
     }
 
+    Node CreateRandomNode()
+    {
+        int random = Random.Range(1, 5);
+
+        Node newNode = null;
+
+        switch (random)
+        {
+            case 1:
+                newNode = NodeFactory.GetInstance().CreateNode(NodeList.RedNode);
+                break;
+            case 2:
+                newNode = NodeFactory.GetInstance().CreateNode(NodeList.BlueNode);
+                break;
+            case 3:
+                newNode = NodeFactory.GetInstance().CreateNode(NodeList.GreenNode);
+                break;
+            case 4:
+                newNode = NodeFactory.GetInstance().CreateNode(NodeList.YellowNode);
+                break;
+            default:
+                Debug.LogError("Unidentified Node!!!");
+                break;
+        }
+        return newNode;
+    }
+
     void MakeFallMoveMent()
     {
-        for (int i = currentStage.BoardYSize - 1; i > 0; i--)
-        {
-            for (int j = 0; j < currentStage.BoardXSize; j++)
-            {
-                if(NodeBoard[i, j] == null && NodeBoard[i-1, j] != null && NodeBoard[i-1, j].CanMove == true)
-                {
-                    NodeBoard[i - 1, j].OrderMove(GetNodePosition(j, i));
-                    NodeBoard[i, j] = NodeBoard[i - 1, j];
-                    NodeBoard[i - 1, j] = null;
-                    NodeBoard[i, j].SetPosition(j, i);
-                    onMoveList.Add(NodeBoard[i, j]);
-                }
-            }
-        }
-
         for (int j = 0; j < currentStage.BoardXSize; j++)
         {
-            if (NodeBoard[0, j] == null)
+            int preset = -1;
+
+            for (int i = currentStage.BoardYSize - 1; i >= 0; i--)
             {
-                int random = Random.Range(1, 5);
-
-                switch (random)
+                if(NodeBoard[i, j] == null)
                 {
-                    case 1:
-                        NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.RedNode);
-                        break;
-                    case 2:
-                        NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.BlueNode);
-                        break;
-                    case 3:
-                        NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.GreenNode);
-                        break;
-                    case 4:
-                        NodeBoard[0, j] = NodeFactory.GetInstance().CreateNode(NodeList.YellowNode);
-                        break;
-                    default:
-                        Debug.LogError("Unidentified Node!!!");
-                        NodeBoard[0, j].NodeType = NodeType.None;
-                        break;
+                    int Getfrom = preset;
+                    for(int k = i - 1; k >= 0; k--)
+                    {
+                        if(NodeBoard[k, j] != null)
+                        {
+                            if(NodeBoard[k, j].CanMove == false)
+                            {
+                                Getfrom = -999;
+                                break;
+                            }
+                            else
+                            {
+                                Getfrom = k;
+                                break;
+                            }
+                        }
+                    }
+                    if (Getfrom >= 0)
+                    {
+                        NodeBoard[Getfrom, j].OrderMove(GetNodePosition(j, i));
+                        NodeBoard[i, j] = NodeBoard[Getfrom, j];
+                        NodeBoard[Getfrom, j] = null;
+                        NodeBoard[i, j].SetPosition(j, i);
+                        onMoveList.Add(NodeBoard[i, j]);
+                    }
+                    else if (Getfrom == -999)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        NodeBoard[i, j] = CreateRandomNode();
+
+                        Transform rect = NodeBoard[i, j].GetTransform();
+                        rect.SetParent(this.GetComponent<Transform>());
+                        rect.position = GetNodePosition(j, preset);
+                        NodeBoard[i, j].OrderMove(GetNodePosition(j, i));
+                        onMoveList.Add(NodeBoard[i, j]);
+                        NodeBoard[i, j].SetPosition(j, i);
+                        preset--;
+                    }
                 }
-
-                NodeBoard[0, j].SetPosition(j, 0);
-
-                Transform rect = NodeBoard[0, j].GetTransform();
-                rect.SetParent(this.GetComponent<Transform>());
-                rect.position = GetNodePosition(j, -1);
-
-                NodeBoard[0, j].OrderMove(GetNodePosition(j, 0));
-                onMoveList.Add(NodeBoard[0, j]);
-
             }
         }
     }

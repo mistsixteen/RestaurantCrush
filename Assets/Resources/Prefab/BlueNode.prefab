@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveLength: 0.5
-  moveFrame: 5
+  moveFrame: 10
   isActivated: 0
   itemType: 0
 --- !u!61 &5517548609941421000
