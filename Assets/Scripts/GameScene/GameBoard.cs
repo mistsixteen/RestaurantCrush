@@ -109,6 +109,7 @@ public class GameBoard : MonoBehaviour
                                             if (isInGrid(yPos + i, xPos + j))
                                             {
                                                 isMatched[yPos + i, xPos + j] = true;
+                                                EffectFactory.GetInstance().MakeFireEffect(GetNodePosition(xPos + j, yPos + i));
                                                 if (NodeBoard[yPos + i, xPos + j].itemType != ItemType.None && NodeBoard[yPos + i, xPos + j].isActivated == false)
                                                 {
                                                     NodeBoard[yPos + i, xPos + j].isActivated = true;
@@ -117,9 +118,6 @@ public class GameBoard : MonoBehaviour
                                             }
                                         }
                                     }
-
-                                    
-                                    //Todo : 추후구현
                                     break;
 
                                 case ItemType.Horizontal:
@@ -127,6 +125,7 @@ public class GameBoard : MonoBehaviour
                                     for (int i = 0; i < currentStage.BoardXSize; i++)
                                     {
                                         isMatched[Line, i] = true;
+                                        EffectFactory.GetInstance().MakeFireEffect(GetNodePosition(i, Line));
                                         if (NodeBoard[Line, i].itemType != ItemType.None && NodeBoard[Line, i].isActivated == false)
                                         {
                                             NodeBoard[Line, i].isActivated = true;
@@ -140,6 +139,7 @@ public class GameBoard : MonoBehaviour
                                     for (int i = 0; i < currentStage.BoardYSize; i++)
                                     {
                                         isMatched[i, Line] = true;
+                                        EffectFactory.GetInstance().MakeFireEffect(GetNodePosition(Line, i));
                                         if (NodeBoard[i, Line].itemType != ItemType.None && NodeBoard[i, Line].isActivated == false)
                                         {
                                             NodeBoard[i, Line].isActivated = true;

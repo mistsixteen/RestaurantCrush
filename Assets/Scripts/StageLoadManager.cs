@@ -43,6 +43,23 @@ public class StageLoadManager
     {
         currentStage = new StageInfo
         {
+            CurrentStageType = StageType.StageTypeInfinte,
+            targetScore = 20,
+            BaseXPos = -4,
+            BaseYPos = 3.3f,
+            NodeXDistance = 1.2f,
+            NodeYDistance = -1.2f,
+            BoardXSize = 10,
+            BoardYSize = 7,
+            MoveLeft = 10,
+            Score = 0
+        };
+    }
+
+    public void LoadStage_Stage()
+    {
+        currentStage = new StageInfo
+        {
             CurrentStageType = StageType.StageTypeTargetScore,
             targetScore = 20,
             BaseXPos = -4,

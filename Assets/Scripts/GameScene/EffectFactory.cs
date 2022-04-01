@@ -5,7 +5,7 @@ using UnityEngine;
 public class EffectFactory
 {
     // Start is called before the first frame update
-    private GameObject StarParticle, IceParticle;
+    private GameObject StarParticle, IceParticle, FireParticle;
 
     private static EffectFactory instance;
 
@@ -22,6 +22,14 @@ public class EffectFactory
     {
         StarParticle = Resources.Load<GameObject>("Prefab/StarParticle");
         IceParticle = Resources.Load<GameObject>("Prefab/IceParticle");
+        FireParticle = Resources.Load<GameObject>("Prefab/FireParticle");
+    }
+
+    public void MakeFireEffect(Vector3 pos)
+    {
+        GameObject tempObj = GameObject.Instantiate(FireParticle);
+
+        tempObj.transform.position = new Vector3(pos.x, pos.y, -1.0f);
     }
 
     public void MakeStarParticleEffect(Vector3 pos, int Num)
@@ -31,7 +39,6 @@ public class EffectFactory
             Vector2 MoveVector = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
             MoveVector.Normalize();
 
-            //Todo : Make StarParticleEffect
             GameObject tempObj = GameObject.Instantiate(StarParticle);
 
             tempObj.GetComponent<StarParticle>().SetMoveVector(MoveVector);
@@ -45,7 +52,6 @@ public class EffectFactory
             Vector2 MoveVector = new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
             MoveVector.Normalize();
 
-            //Todo : Make StarParticleEffect
             GameObject tempObj = GameObject.Instantiate(IceParticle);
 
             tempObj.GetComponent<StarParticle>().SetMoveVector(MoveVector);

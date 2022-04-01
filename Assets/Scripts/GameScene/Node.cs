@@ -34,7 +34,7 @@ public class Node : MonoBehaviour
     private Transform myTransform;
 
     public float moveLength = 0.5f;
-    public int moveFrame = 30;
+    public int moveFrame = 10;
 
     private int xPos, yPos;
 
@@ -222,7 +222,7 @@ public class Node : MonoBehaviour
     public void SetDisappear()
     {
         currentState = NodeStatus.Disappearing;
-        MoveFrameLeft = 10;
+        MoveFrameLeft = 5;
         EffectFactory.GetInstance().MakeStarParticleEffect(transform.position, 5);
     }
 
