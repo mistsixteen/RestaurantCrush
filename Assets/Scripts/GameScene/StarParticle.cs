@@ -6,39 +6,39 @@ public class StarParticle : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    private Vector3 MoveVector;
+    private Vector3 moveVector;
     
-    private int FrameLeft = 20;
+    private int frameLeft = 20;
     private float moveSpeed = 0.45f;
     private float gValue = 0.15f;
 
     private SpriteRenderer Renderer;
-    private Coroutine particleCorutine;
+    private Coroutine corutineFadeOut;
 
     void Start()
     {
         Renderer = this.GetComponent<SpriteRenderer>();
 
-        particleCorutine = StartCoroutine(ParticleFadeOut());
+        corutineFadeOut = StartCoroutine(FadeOutRoutine());
     }
 
 
     public void SetMoveVector(Vector2 mov)
     {
-        MoveVector = new Vector3(mov.x, mov.y, 0.0f);
+        moveVector = new Vector3(mov.x, mov.y, 0.0f);
     }
 
-    IEnumerator ParticleFadeOut()
+    IEnumerator FadeOutRoutine()
     {
-        Color color = Renderer.color;
-        while(FrameLeft >= 0)
+        Color myColor = Renderer.color;
+        while(frameLeft >= 0)
         {
-            FrameLeft--;
+            frameLeft--;
 
-            transform.position += MoveVector * moveSpeed;
-            MoveVector.y -= gValue;
-            color.a -= 0.05f;
-            Renderer.color = color;
+            transform.position += moveVector * moveSpeed;
+            moveVector.y -= gValue;
+            myColor.a -= 0.05f;
+            Renderer.color = myColor;
 
             yield return new WaitForSeconds(0.05f);
         }

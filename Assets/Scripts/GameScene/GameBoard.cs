@@ -93,7 +93,7 @@ public class GameBoard : MonoBehaviour
                             Debug.Log("Activate!!!");
                             Node tempNode = itemActivated.Dequeue();
                             int Line = 0;
-                            //TODO : Activate Item -> Chain Item
+                            // Activate Item -> Chain Item
                             switch (tempNode.itemType)
                             {
                                 case ItemType.Bomb:
@@ -151,7 +151,7 @@ public class GameBoard : MonoBehaviour
                             }
                         }
 
-                        //delete
+                        //delete Node
                         for (int i = 0; i < currentStage.BoardYSize; i++)
                         {
                             for (int j = 0; j < currentStage.BoardXSize; j++)
@@ -166,7 +166,7 @@ public class GameBoard : MonoBehaviour
                                 }
                             }
                         }
-                        //affect
+                        //주변 노드를 Affect처리
                         for (int i = 0; i < currentStage.BoardYSize; i++)
                         {
                             for (int j = 0; j < currentStage.BoardXSize; j++)
@@ -182,12 +182,10 @@ public class GameBoard : MonoBehaviour
                         {
                             if (newItem == null)
                             {
-                                Debug.Log("NULL error!!!");
                                 continue;
                             }
                             int xPos = newItem.GetXpos();
                             int yPos = newItem.GetYpos();
-                            Debug.Log("Item = " + yPos + xPos);
                             if (NodeBoard[yPos, xPos] == null)
                             {
                                 NodeBoard[yPos, xPos] = newItem;
@@ -202,7 +200,7 @@ public class GameBoard : MonoBehaviour
                         currentGameState = GameStatus.FallCheck;
                     }
                     else
-                    {
+                    { //Game Over Check
                         if (currentStage.IsGameOver())
                         {
                             for (int i = 0; i < currentStage.BoardYSize; i++)
@@ -603,6 +601,7 @@ public class GameBoard : MonoBehaviour
 
     void MakeFallMoveMent()
     {
+        const int CANT_MOVE = -999;
         for (int j = 0; j < currentStage.BoardXSize; j++)
         {
             int preset = -1;
@@ -618,7 +617,7 @@ public class GameBoard : MonoBehaviour
                         {
                             if(NodeBoard[k, j].CanMove == false)
                             {
-                                Getfrom = -999;
+                                Getfrom = CANT_MOVE; // 위에 이동불가능한 블록이 있을 경우, 
                                 break;
                             }
                             else
@@ -636,11 +635,11 @@ public class GameBoard : MonoBehaviour
                         NodeBoard[i, j].SetPosition(j, i);
                         onMoveList.Add(NodeBoard[i, j]);
                     }
-                    else if (Getfrom == -999)
+                    else if (Getfrom == CANT_MOVE)
                     {
                         continue;
                     }
-                    else
+                    else //보드 위에서 떨어짐 : 새로운 블록 생성
                     {
                         NodeBoard[i, j] = CreateRandomNode();
 
